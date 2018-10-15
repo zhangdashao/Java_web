@@ -27,6 +27,18 @@ const httpData = (state = {}, action) => {
     }
 };
 
+const userInfo = (state = {}, action) => {
+    switch (action.type) {
+        case type.SAVE_INFO:
+            return {
+                ...state,
+                userInfo: {...action.userInfo}
+            }
+        default:
+            return {...state}
+    }
+}
+
 export default combineReducers({
-    httpData
+    httpData,userInfo
 });

@@ -2,16 +2,20 @@
  * Created by hao.cheng on 2017/4/16.
  */
 import React from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchData, receiveData } from '@/action';
-import { login } from '../../axios/api'
+import { baseURL } from '../../axios/config'
 
 const FormItem = Form.Item;
 
 class Login extends React.Component {
+    state = {
+        imgURL: ''
+    }
     componentWillMount() {
+        this.changeValidateCode()
         const { receiveData } = this.props;
         receiveData(null, 'auth');
     }
@@ -40,10 +44,15 @@ class Login extends React.Component {
                 // if (values.userName === 'admin' && values.password === 'admin') fetchData({funcName: 'admin', stateName: 'auth'});
                 // if (values.userName === 'guest' && values.password === 'guest') fetchData({funcName: 'guest', stateName: 'auth'});
 
-                login(values)
             }
         });
     };
+
+    changeValidateCode = () => {
+        this.setState({
+            imgURL: `${baseURL}/util/createValidCode?random=${Math.random()}`
+        })   
+    }
     
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -55,18 +64,28 @@ class Login extends React.Component {
                     </div>
                     <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
                         <FormItem>
-                            {getFieldDecorator('userName', {
+                            {getFieldDecorator('user_account', {
                                 rules: [{ required: true, message: '请输入用户名!' }],
                             })(
                                 <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="请输入用户名" />
                             )}
                         </FormItem>
                         <FormItem>
-                            {getFieldDecorator('password', {
+                            {getFieldDecorator('user_password', {
                                 rules: [{ required: true, message: '请输入密码!' }],
                             })(
                                 <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="请输入密码" />
                             )}
+                        </FormItem>
+                        <FormItem>
+                            <Tooltip placement="topLeft" title="点击切换验证码">
+                                <img src={this.state.imgURL} onClick={this.changeValidateCode} alt="666" />
+                            </Tooltip>
+                            {getFieldDecorator('validCode', {
+                                rules: [{ required: true, message: '验证码' }],
+                            })(
+                                <Input type="text" placeholder="请输入验证码" />
+                                )}
                         </FormItem>
                         <FormItem>
                             {/* {getFieldDecorator('remember', {

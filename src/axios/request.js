@@ -3,7 +3,7 @@
  * 请求拦截、响应拦截、错误统一处理
  */
 import axios from 'axios';
-import { testAPI } from './config'
+import { baseURL } from './config'
 
 
 
@@ -33,9 +33,23 @@ const errorHandle = (status, other) => {
 
 // 创建axios实例
 var http = axios.create({
-  baseURL: testAPI,
+  baseURL,
   timeout: 1000 * 12
 });
+
+
+// 发送请求前处理request的数据
+http.defaults.transformRequest = [(data) => {
+  if (data instanceof FormData) {
+    return data;
+  } else if (data !== undefined) {
+    const newData = new FormData();
+    for (const k of Object.keys(data)) {
+      newData.append(k, data[k]);
+    }
+    return newData;
+  }
+}];
 // 设置post请求头
 http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 /** 

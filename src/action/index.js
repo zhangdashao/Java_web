@@ -23,3 +23,8 @@ export const fetchData = ({funcName, params, stateName}) => dispatch => {
     dispatch(requestData(stateName));
     return http[funcName](params).then(res => dispatch(receiveData(res, stateName)));
 };
+
+export const saveUserInfo = (data) => ({
+    type: type.SAVE_INFO,
+    userInfo: data
+})
