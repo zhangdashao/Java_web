@@ -2,6 +2,11 @@
  * 路由组件出口文件
  * yezi 2018年6月24日
  */
+import FilesList from './filesmanage/FilesList'
+import UploadFile from './filesmanage/UploadFile'
+import WasteBox from './filesmanage/WasteBox'
+import HospitalList from './filesmanage/HospitalList'
+import Setting from './filesmanage/Setting'
 import Loadable from 'react-loadable';
 import Loading from './widget/Loading';
 import BasicForm from './forms/BasicForm';
@@ -33,7 +38,7 @@ const WysiwygBundle = Loadable({    // 按需加载富文本配置
 });
 
 export default {
-    BasicForm, BasicTable, AdvancedTable, AsynchronousTable,
+    FilesList,UploadFile,WasteBox,Setting, HospitalList, BasicForm, BasicTable, AdvancedTable, AsynchronousTable,
     Echarts, Recharts, Icons, Buttons, Spins, Modals, Notifications,
     Tabs, Banners, Drags, Dashboard, Gallery, BasicAnimations,
     ExampleAnimations, AuthBasic, RouterEnter, WysiwygBundle,

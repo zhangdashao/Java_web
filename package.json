@@ -68,7 +68,8 @@
     "bundle-loader": "^0.5.5",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
-    "react-hot-loader": "^4.3.3"
+    "react-hot-loader": "^4.3.3",
+    "reqwest": "^2.0.5"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
