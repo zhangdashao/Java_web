@@ -1,0 +1,277 @@
+<template>
+  <div class="report-list">
+    <padding-wrapper>
+      <search-wrapper>
+        <el-form :inline="true" :model="selectParams">
+          <el-form-item label="用户名">
+            <el-input v-model="selectParams.fuzzyname" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </search-wrapper>
+      <mini-wrapper>
+        <div class="betweenLayout">
+          <div>
+          </div>
+          <div>
+            <el-button size="mini" type="primary" @click="dialogAddUser = true" icon="el-icon-plus">添加用户</el-button>
+            <el-button size="mini" type="primary" @click="_deleteUser({type:'multiple',id:multipleSelection})">批量停用</el-button>
+          </div>
+        </div>
+      </mini-wrapper>
+      <el-table :data="userList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column align="center" header-align="center" prop="user_name" label="用户名"></el-table-column>
+        <el-table-column align="center" header-align="center" prop="hospital_name" label="医院"></el-table-column>
+        <el-table-column align="center" header-align="center" prop="modify_time" label="更新时间"></el-table-column>
+        <el-table-column align="center" header-align="center" prop="phone" label="电话">
+          <template scope="scope">
+            <el-input @blur="changePhone(scope.row)" v-model="scope.row.phone"></el-input>
+          </template>
+          <el-input>12</el-input>
+        </el-table-column>
+        <el-table-column align="center" header-align="center" label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="_deleteUser({type:'single',id:scope.row.id})">停用用户</el-button>
+            <span style="color:#409EFF">|</span>
+            <el-button type="text" @click="$router.push({name: 'FileList',params:{id: scope.row.id}})">文件管理</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block" style="float: right; margin-top: 0.5%; margin-bottom: 0.5%;">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="selectParams.page" :page-sizes="[10, 20, 30, 40]" :page-size="selectParams.rows" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
+        </el-pagination>
+      </div>
+
+      <el-dialog :modal-append-to-body="false" title="添加用户" :visible.sync="dialogAddUser" width="600px">
+        <el-form :inline="true" :rules="rulesAddUser" :model="userInfo" ref="userInfo" class="demo-form-inline">
+          <el-form-item label="用户角色" prop="role_code">
+            <el-select style="width:182px" v-model="userInfo.role_code" placeholder="请选择">
+              <el-option v-for="(item,index) in selectUserList" :key="index" :value="item.role_code" :label="item.role_name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="用户账号" prop="user_account">
+            <el-input v-model="userInfo.user_account"></el-input>
+          </el-form-item>
+          <el-form-item label="用户姓名" prop="user_name">
+            <el-input v-model="userInfo.user_name"></el-input>
+          </el-form-item>
+          <el-form-item label="用户密码" prop="unencrypted_pwd">
+            <el-input v-model="userInfo.unencrypted_pwd"></el-input>
+          </el-form-item>
+
+          <el-form-item label="手机号" prop="phone">
+            <el-input v-model="userInfo.phone"></el-input>
+          </el-form-item>
+
+
+          <el-form-item v-if="false" label="医院主联系人" prop="hospital_primary">
+            <el-select v-model="userInfo.hospital_primary" placeholder="请选择">
+              <el-option label="是" value=1>是</el-option>
+              <el-option label="否" value=0>否</el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="userInfo.role_code === '1003'" label="医院名称" prop="hospital_name">
+            <el-input v-model="userInfo.hospital_name"></el-input>
+          </el-form-item>
+
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="mini" @click="dialogAddUser = false">取 消</el-button>
+          <el-button size="mini" type="primary" @click="_confirmAddUser">确 定</el-button>
+        </span>
+      </el-dialog>
+
+    </padding-wrapper>
+  </div>
+</template>
+
+<script>
+import BgTitle from '$base-c/BgTitle';
+import SearchWrapper from '$base-c/SearchWrapper';
+import PaddingWrapper from '$base-c/PaddingWrapper';
+import SearchBar from '$base-c/SearchBar';
+import MiniWrapper from '$base-c/MiniWrapper';
+
+export default {
+  name: 'UserList',
+  components: {
+    BgTitle,
+    SearchWrapper,
+    PaddingWrapper,
+    SearchBar,
+    MiniWrapper,
+  },
+  data() {
+    return {
+      dialogAddUser: false,
+      selectParams: {
+        fuzzyname: '',
+        page: 1,
+        rows: 10,
+      },
+      userInfo: {
+        user_account: '',
+        unencrypted_pwd: '',
+        againNewPassword: '',
+        user_name: '',
+        role_code: '',
+        hospital_id: '-1',
+        hospital_name: '',
+        phone: '',
+        hospital_primary: '1',
+      },
+      selectUserList: [],
+      userList: [],
+      multipleSelection: [],
+      totalCount: 0,
+
+      rulesAddUser: {
+        user_account: [{ required: true, message: '请输入用户账户', trigger: 'blur' }],
+        user_name: [{ required: true, message: '请输入用户姓名', trigger: 'blur' }],
+        unencrypted_pwd: [{ required: true, message: '请输入用户密码', trigger: 'blur' }],
+        phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
+        role_code: [{ required: true, message: '请选择用户角色', trigger: 'change' }],
+        hospital_primary: [{ required: true, message: '请输入医院主联系人', trigger: 'blur' }],
+        hospital_name: [{ required: true, message: '请输入医院名称', trigger: 'blur' }],
+      },
+    };
+  },
+  mounted() {
+    this._getUserList();
+    this._getSelectUserList();
+  },
+  computed: {
+    dialogTitle() {
+      return this.operateState === 'edit' ? '编辑查看' : '添加医院';
+    },
+  },
+  methods: {
+    _getUserList() {
+      const copyParams = JSON.parse(JSON.stringify(this.selectParams));
+      this.$api.selectUInfoListPage(copyParams).then((res) => {
+        this.userList = res.data.uInfoList;
+        this.totalCount = res.data.count;
+      });
+    },
+    _getSelectUserList() {
+      this.$api.selecteURoleByProjectId().then((res) => {
+        if (res.code === '200') {
+          this.selectUserList = res.data;
+        }
+      });
+    },
+    _confirmAddUser() {
+      this.$refs.userInfo.validate((valid) => {
+        if (valid) {
+          this.userInfo.againNewPassword = this.userInfo.unencrypted_pwd;
+          if (this.userInfo.role_code === '1000') {
+            this.userInfo.hospital_name = '';
+          }
+          this.$api.insertUInfo(this.userInfo).then((res) => {
+            if (res.code === '200') {
+              this.dialogAddUser = false;
+              this.$message.success('添加成功！');
+              for (const key of Object.keys(this.userInfo)) {
+                if (key !== 'hospital_id') {
+                  this.userInfo[key] = '';
+                }
+              }
+              this._getUserList();
+            }
+          });
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    search() {
+      this._getUserList();
+    },
+    /** 修改用户手机号 */
+    changePhone(e) {
+      const { phone, id: userId } = e;
+      this.$api.updateUserPhoneByUserId({ phone, userId }).then((res) => {
+        if (res.code === '200') {
+          this.$message.success('修改电话成功！');
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
+    // 删除医院方法（删除一条或者是多条）
+    _deleteUser(data) {
+      let id = '';
+      if (data.type === 'multiple') {
+        if (!data.id.length) {
+          this.$message.warning('请选择条目！');
+          return;
+        } else {
+          id = JSON.stringify(data.id);
+        }
+      } else if (data.type === 'single') {
+        id = JSON.stringify([data.id]);
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$api.deleteUserInfoBatch({ userIds: id }).then((res) => {
+            if (res.code === '200') {
+              this._getUserList();
+              this.$message({
+                type: 'success',
+                message: '删除成功!',
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          });
+        });
+    },
+    /**  **************以下为分页方法↓******************** */
+    handleSizeChange(pageSize) {
+      this.selectParams.rows = pageSize;
+      this._getUserList();
+    },
+    handleCurrentChange(currentPage) {
+      this.selectParams.page = currentPage;
+      this._getUserList();
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = [];
+      this.multipleSelection = val.map(item => item.id);
+      console.log(this.multipleSelection);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.report-list {
+  height: 100%;
+  width: 100%;
+  .listForm {
+    .el-form-item {
+      margin-bottom: 0;
+    }
+  }
+  .betweenLayout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    padding: 5px 0;
+  }
+}
+</style>
