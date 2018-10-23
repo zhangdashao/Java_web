@@ -38,7 +38,16 @@ export default [
         name: 'WasteBox',
         component: 'WasteBox',
         meta: {
-          title: '文件恢复',
+          title: '回收站',
+          permission: '对应具体权限',
+        },
+      },
+      {
+        path: 'wasteReset',
+        name: 'WasteReset',
+        component: 'WasteReset',
+        meta: {
+          title: '用户文件恢复',
           permission: '对应具体权限',
         },
       },

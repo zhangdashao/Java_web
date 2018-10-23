@@ -17,7 +17,7 @@ export default [
         name: 'WasteBox',
         component: 'WasteBox',
         meta: {
-          title: '垃圾箱',
+          title: '回收站',
           permission: '对应具体权限',
         },
       },
