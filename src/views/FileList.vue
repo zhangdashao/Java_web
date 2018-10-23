@@ -3,7 +3,7 @@
     <bg-title :title="role === 'user' ? '我的文件' : '用户文件'"></bg-title>
     <padding-wrapper>
       <search-wrapper>
-        <search-bar :searchForm="selectParams" @search-file="search" :role='role' @reset-form-file="resetSearch"></search-bar>
+        <search-bar :searchForm="selectParams" @search-file="search" :role='role' :waste=false @reset-form-file="resetSearch"></search-bar>
       </search-wrapper>
       <mini-wrapper>
         <div class="betweenLayout">
