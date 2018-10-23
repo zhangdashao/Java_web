@@ -218,6 +218,8 @@ export default {
           navigator.msSaveBlob(blob, fileName);
         }
         this.$message.success('下载成功');
+      }).then(() => {
+        this.selectAdminOrUser();
       })
         .catch(() => {
           this.loadSign = false;

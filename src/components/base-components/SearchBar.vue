@@ -18,7 +18,7 @@
       <el-date-picker format="yyyy-MM-dd" @change="changeTime" v-model="firEndTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
       </el-date-picker>
     </el-form-item>
-    <el-form-item label="上传人">
+    <el-form-item v-if="role === 'admin'" label="上传人">
       <el-input v-model="searchForm.uploadUserName" placeholder="请输入内容"></el-input>
     </el-form-item>
     <el-form-item>
@@ -27,12 +27,6 @@
     <el-form-item>
       <el-button size="mini" type="primary" icon="el-icon-search" @click="resetSearchForm">重置</el-button>
     </el-form-item>
-    <!-- <el-form-item v-if="role === 'user'">
-      <el-button size="mini" type="primary" icon="el-icon-search" @click="comAllDownload">批量下载</el-button>
-    </el-form-item>
-    <el-form-item v-if="false">
-      <el-button size="mini" type="primary" icon="el-icon-search" @click="comAllOperate">批量恢复</el-button>
-    </el-form-item> -->
   </el-form>
 </template>
 <script>
@@ -69,14 +63,6 @@ export default {
     },
     comSearch() {
       this.$emit('search-file', this.searchForm);
-    },
-    /** 批量下载  */
-    comAllDownload() {
-      this.$emit('download-file');
-    },
-    /** 批量恢复  */
-    comAllOperate() {
-      this.$emit('reset-file');
     },
     changeTime() {
       if (this.firEndTime) {

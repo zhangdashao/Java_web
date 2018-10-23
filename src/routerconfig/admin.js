@@ -5,9 +5,9 @@ export default [
     mainText: '文件管理',
     children: [
       {
-        path: 'userList',
-        name: 'UserList',
-        component: 'UserList',
+        path: 'fileList',
+        name: 'FileList',
+        component: 'FileList',
         meta: {
           title: '用户文件',
           permission: '对应具体权限',

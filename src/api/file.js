@@ -14,12 +14,16 @@ export default {
   selectFileDeleteList: data => http.get(getDataStringify('/file/selectFileDeleteList', data)),
   // GET /file/selectFileDownRecordList 查询文件下载列表
   selectFileDownRecordList: data => http.get(getDataStringify('/file/selectFileDownRecordList', data)),
+  // GET /file/selectFileListManage 管理员查询文件列表
+  selectFileListManage: data => http.get(getDataStringify('/file/selectFileListManage', data)),
   // GET /file/selectFileList 查询文件列表，管理员和普通用户都能用
   selectFileList: data => http.get(getDataStringify('/file/selectFileList', data)),
   // GET /file/selectManageUploadPubList 管理员查询自己上传的公共文件列表
   selectManageUploadPubList: data => http.get(getDataStringify('/file/selectManageUploadPubList', data)),
   // GET /file/selectNoDownloadCount 管理员查询未下载文件总数
   selectNoDownloadCount: () => http.get('/file/selectNoDownloadCount'),
+  // GET /file/selectUserFileList 查询某用户文件列表，管理员和普通用户都能用
+  selectUserFileList: data => http.get(getDataStringify('/file/selectUserFileList', data)),
   // POST /file/updateFileInfoStatus 设置文件状态
   updateFileInfoStatus: data => http.post('/file/updateFileInfoStatus', data),
   // POST /file/uploadCommonUser 普通医院用户上传文件

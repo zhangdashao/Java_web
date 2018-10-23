@@ -77,7 +77,7 @@
 import { mapMutations, mapActions } from 'vuex';
 import { deepCloneJson } from '$global/global-function';
 import auth from '../util/auth';
-import localMenu from '../routerconfig/hospital';
+import localMenu from '../routerconfig/admin';
 import { load, login_onclick } from '../util/usbKey';
 
 export default {
