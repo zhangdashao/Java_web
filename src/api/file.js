@@ -18,6 +18,8 @@ export default {
   selectFileList: data => http.get(getDataStringify('/file/selectFileList', data)),
   // GET /file/selectManageUploadPubList 管理员查询自己上传的公共文件列表
   selectManageUploadPubList: data => http.get(getDataStringify('/file/selectManageUploadPubList', data)),
+  // GET /file/selectNoDownloadCount 管理员查询未下载文件总数
+  selectNoDownloadCount: () => http.get('/file/selectNoDownloadCount'),
   // POST /file/updateFileInfoStatus 设置文件状态
   updateFileInfoStatus: data => http.post('/file/updateFileInfoStatus', data),
   // POST /file/uploadCommonUser 普通医院用户上传文件

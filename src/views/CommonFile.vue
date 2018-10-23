@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       unDownloadFile: 0,
-      dialogUndownloadFile: true,
+      dialogUndownloadFile: false,
       dialogShowDownloadView: false,
       loadSign: false,
       role: '',
@@ -119,6 +119,9 @@ export default {
   mounted() {
     this.role = this.$store.getters.getRole;
     this.selectAdminOrUser();
+    if (this.role === 'admin') {
+      this._selectNoDownloadCount();
+    }
   },
   methods: {
     _getUserComFileList() {
@@ -142,6 +145,19 @@ export default {
       } else if (this.role === 'user') {
         this._getUserComFileList();
       }
+    },
+    /** 管理员获取未下载文件数 */
+    _selectNoDownloadCount() {
+      this.$api.selectNoDownloadCount().then((res) => {
+        if (res.code === '200') {
+          this.unDownloadFile = res.data;
+          if (this.unDownloadFile > 0) {
+            this.dialogUndownloadFile = true;
+          }
+        }
+      }).catch(() => {
+        this.$message.warning('获取未下载文件总数失败！');
+      });
     },
     search() {
       this.selectAdminOrUser();
