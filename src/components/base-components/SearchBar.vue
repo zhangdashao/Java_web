@@ -5,8 +5,7 @@
     </el-form-item>
     <el-form-item label="类型">
       <el-select v-model="searchForm.fileType" clearable placeholder="全部类型">
-        <el-option label="word" value="word"></el-option>
-        <el-option label="Excel" value="Excel"></el-option>
+        <el-option v-for="(item,index) in typeList" :key="index" :label="item.dic_name" :value="item.dic_value"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="状态">
@@ -48,12 +47,26 @@ export default {
     },
     role: String,
   },
+  mounted() {
+    this._selectDictionaryList();
+  },
   data() {
     return {
       firEndTime: '',
+      typeList: [],
     };
   },
   methods: {
+    /** 获取文件类型列表 */
+    _selectDictionaryList() {
+      this.$api.selectDictionaryList({ typeCode: '0001' }).then((res) => {
+        if (res.code === '200') {
+          this.typeList = res.data;
+        }
+      }).catch(() => {
+        this.$message.error('获取文件类型失败！');
+      });
+    },
     comSearch() {
       this.$emit('search-file', this.searchForm);
     },
@@ -88,10 +101,7 @@ export default {
       return `${year}-${mothe}-${day} 00:00:00`;
     },
     resetSearchForm() {
-      this.searchForm.fuzzyname = '';
       this.firEndTime = '';
-      this.searchForm.startTime = '';
-      this.searchForm.endTime = '';
       this.$emit('reset-form-file');
     },
   },

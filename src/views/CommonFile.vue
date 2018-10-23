@@ -11,7 +11,7 @@
           </div>
           <div>
             <el-button size="mini" type="primary" icon="el-icon-plus" @click="_downloadFile({type:'multiple',id:multipleSelection})">批量下载</el-button>
-            <el-button v-if="role === 'admin'" size="mini" type="primary" icon="el-icon-plus">批量删除</el-button>
+            <el-button v-if="role === 'admin'" size="mini" type="primary" icon="el-icon-plus" @click="_deleteFile({type: 'multiple',id:multipleSelection})">批量删除</el-button>
             <el-button v-if="role === 'admin'" size="mini" type="primary" @click="$router.push({name:'Upload'})" icon="el-icon-plus">上传文件</el-button>
           </div>
         </div>
@@ -32,10 +32,10 @@
         <el-table-column align="center" header-align="center" prop="user_name" label="上传人"></el-table-column>
         <el-table-column align="center" header-align="center" prop="download_count" label="下载次数"></el-table-column>
         <el-table-column align="center" header-align="center" prop="remark" label="备注"></el-table-column>
-        <el-table-column v-if="role === 'admin'" align="center" header-align="center" prop="status" :formatter="formatterStatus" label="状态"></el-table-column>
-        <el-table-column align="center" header-align="center" label="操作">
+        <el-table-column align="center" header-align="center" prop="status" :formatter="formatterStatus" label="状态"></el-table-column>
+        <el-table-column align="center" header-align="center" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button v-if="role ==='admin'" type="text" @click="_adminDeleteFile({type: 'waste',id:scope.row.id})">删除</el-button>
+            <el-button v-if="role ==='admin'" type="text" @click="_deleteFile({type: 'single',id:scope.row.id})">删除</el-button>
             <span v-if="role ==='admin'" style="color:#409EFF">|</span>
             <el-button type="text" @click="_downloadFile({type:'single',id:scope.row.id,name:scope.row.file_original_name})">下载</el-button>
             <span v-if="role === 'admin'" style="color:#409EFF">|</span>
@@ -62,6 +62,16 @@
         </span>
       </el-dialog>
 
+      <el-dialog :modal-append-to-body="false" :append-to-body="true" :visible.sync='dialogUndownloadFile' width="401px">
+        <div style="display:flex;justify-content:center;font-size:18px;margin-bottom:20px;">
+          <i class="iconfont icon-tishi"></i>
+          <span>{{`您有${unDownloadFile}个文件尚未下载`}}</span>
+        </div>
+        <div style="display:flex;justify-content:center;">
+          <el-button style="width:200px;" type="primary">前往查看下载</el-button>
+        </div>
+      </el-dialog>
+
     </padding-wrapper>
   </div>
 </template>
@@ -85,6 +95,8 @@ export default {
   },
   data() {
     return {
+      unDownloadFile: 0,
+      dialogUndownloadFile: true,
       dialogShowDownloadView: false,
       loadSign: false,
       role: '',
@@ -151,7 +163,6 @@ export default {
     _downloadFile(data) {
       let id = '';
       let _download = null;
-      this.loadSign = true;
       if (data.type === 'multiple') {
         if (!data.id.length) {
           this.$message.warning('请选择条目！');
@@ -166,7 +177,7 @@ export default {
         id = String(data.id);
         _download = this.$api.downFile({ fileId: id });
       }
-
+      this.loadSign = true;
       _download.then((res) => {
         this.loadSign = false;
         const blob = new Blob([res]);
@@ -198,35 +209,28 @@ export default {
         });
     },
     // 删除文件或者是放入垃圾箱
-    _adminDeleteFile(params) {
-      const _delete = this.$api.deleteManageUploadFile;
-      if (params.type === 'delete') {
-        _delete({ fileId: params.id, targetStatus: 0 }).then(
-          (res) => {
-            console.log(res);
-            if (res.code === '200') {
-              this.selectAdminOrUser();
-              this.$message.success('操作成功！！！');
-            }
-          },
-          () => {
-            this.$message.warning('操作出错了！');
-          },
-        );
-      } else if (params.type === 'waste') {
-        _delete({ fileId: params.id }).then(
-          (res) => {
-            console.log(res);
-            if (res.code === '200') {
-              this.selectAdminOrUser();
-              this.$message.success('操作成功！！！');
-            }
-          },
-          () => {
-            this.$message.warning('操作出错了！');
-          },
-        );
+    _deleteFile(data) {
+      let fileIds = '';
+      if (data.type === 'multiple') {
+        if (!data.id.length) {
+          this.$message.warning('请选择条目！');
+          return;
+        } else {
+          fileIds = JSON.stringify(this.multipleSelection);
+        }
+      } else if (data.type === 'single') {
+        console.log(data.id);
+        fileIds = JSON.stringify([data.id]);
       }
+      // 目标状态：0表示已删除，1表示使用中，2表示垃圾箱
+      this.$api.updateFileInfoStatus({ fileIds, targetStatus: 2 }).then((res) => {
+        if (res.code === '200') {
+          this.selectAdminOrUser();
+          this.$message.success('操作成功！！！');
+        }
+      }, () => {
+        this.$message.warning('操作出错了！');
+      });
     },
     // 获取文件下载记录列表
     _getDownloadRecord(id) {
