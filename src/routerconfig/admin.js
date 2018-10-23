@@ -13,15 +13,7 @@ export default [
           permission: '对应具体权限',
         },
       },
-      {
-        path: 'userList',
-        name: 'UserList',
-        component: 'UserList',
-        meta: {
-          title: '用户管理',
-          permission: '对应具体权限',
-        },
-      },
+
       {
         path: 'fileList',
         name: 'FileList',
@@ -48,6 +40,15 @@ export default [
         component: 'WasteReset',
         meta: {
           title: '用户文件恢复',
+          permission: '对应具体权限',
+        },
+      },
+      {
+        path: 'userList',
+        name: 'UserList',
+        component: 'UserList',
+        meta: {
+          title: '用户管理',
           permission: '对应具体权限',
         },
       },

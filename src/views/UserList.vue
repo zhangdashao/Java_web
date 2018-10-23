@@ -1,13 +1,20 @@
 <template>
   <div class="report-list">
+    <bg-title title="用户管理"></bg-title>
     <padding-wrapper>
       <search-wrapper>
         <el-form :inline="true" :model="selectParams">
           <el-form-item label="用户名">
-            <el-input v-model="selectParams.fuzzyname" placeholder="请输入内容"></el-input>
+            <el-input v-model="selectParams.user_name" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item label="医院">
+            <el-input v-model="selectParams.hospital_name" placeholder="请输入医院名"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button size="mini" type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="primary" icon="el-icon-search" @click="reset">重置</el-button>
           </el-form-item>
         </el-form>
       </search-wrapper>
@@ -16,8 +23,8 @@
           <div>
           </div>
           <div>
+            <el-button size="mini" type="primary" @click="_deleteUser({type:'multiple',id:multipleSelection})">批量关闭</el-button>
             <el-button size="mini" type="primary" @click="dialogAddUser = true" icon="el-icon-plus">添加用户</el-button>
-            <el-button size="mini" type="primary" @click="_deleteUser({type:'multiple',id:multipleSelection})">批量停用</el-button>
           </div>
         </div>
       </mini-wrapper>
@@ -26,18 +33,16 @@
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="user_name" label="用户名"></el-table-column>
         <el-table-column align="center" header-align="center" prop="hospital_name" label="医院"></el-table-column>
+        <el-table-column align="center" header-align="center" prop="hospital_name" label="角色" :formatter="formatterRole"></el-table-column>
+        <el-table-column align="center" header-align="center" prop="phone" label="手机号"></el-table-column>
         <el-table-column align="center" header-align="center" prop="modify_time" label="更新时间"></el-table-column>
-        <el-table-column align="center" header-align="center" prop="phone" label="电话">
-          <template scope="scope">
-            <el-input @blur="changePhone(scope.row)" v-model="scope.row.phone"></el-input>
-          </template>
-          <el-input>12</el-input>
-        </el-table-column>
         <el-table-column align="center" header-align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="_deleteUser({type:'single',id:scope.row.id})">停用用户</el-button>
+            <el-button type="text" @click="_deleteUser({type:'single',id:scope.row.id})">关闭用户</el-button>
             <span style="color:#409EFF">|</span>
-            <el-button type="text" @click="$router.push({name: 'FileList',params:{id: scope.row.id}})">文件管理</el-button>
+            <el-button type="text">历史上传记录</el-button>
+            <span style="color:#409EFF">|</span>
+            <el-button type="text">文件管理</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -67,13 +72,12 @@
             <el-input v-model="userInfo.phone"></el-input>
           </el-form-item>
 
-
-          <el-form-item v-if="false" label="医院主联系人" prop="hospital_primary">
+          <!-- <el-form-item v-if="false" label="医院主联系人" prop="hospital_primary">
             <el-select v-model="userInfo.hospital_primary" placeholder="请选择">
               <el-option label="是" value=1>是</el-option>
               <el-option label="否" value=0>否</el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item v-if="userInfo.role_code === '1003'" label="医院名称" prop="hospital_name">
             <el-input v-model="userInfo.hospital_name"></el-input>
           </el-form-item>
@@ -109,7 +113,8 @@ export default {
     return {
       dialogAddUser: false,
       selectParams: {
-        fuzzyname: '',
+        user_name: '',
+        hospital_name: '',
         page: 1,
         rows: 10,
       },
@@ -130,13 +135,25 @@ export default {
       totalCount: 0,
 
       rulesAddUser: {
-        user_account: [{ required: true, message: '请输入用户账户', trigger: 'blur' }],
-        user_name: [{ required: true, message: '请输入用户姓名', trigger: 'blur' }],
-        unencrypted_pwd: [{ required: true, message: '请输入用户密码', trigger: 'blur' }],
+        user_account: [
+          { required: true, message: '请输入用户账户', trigger: 'blur' },
+        ],
+        user_name: [
+          { required: true, message: '请输入用户姓名', trigger: 'blur' },
+        ],
+        unencrypted_pwd: [
+          { required: true, message: '请输入用户密码', trigger: 'blur' },
+        ],
         phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
-        role_code: [{ required: true, message: '请选择用户角色', trigger: 'change' }],
-        hospital_primary: [{ required: true, message: '请输入医院主联系人', trigger: 'blur' }],
-        hospital_name: [{ required: true, message: '请输入医院名称', trigger: 'blur' }],
+        role_code: [
+          { required: true, message: '请选择用户角色', trigger: 'change' },
+        ],
+        hospital_primary: [
+          { required: true, message: '请输入医院主联系人', trigger: 'blur' },
+        ],
+        hospital_name: [
+          { required: true, message: '请输入医院名称', trigger: 'blur' },
+        ],
       },
     };
   },
@@ -192,18 +209,16 @@ export default {
     search() {
       this._getUserList();
     },
-    /** 修改用户手机号 */
-    changePhone(e) {
-      const { phone, id: userId } = e;
-      this.$api.updateUserPhoneByUserId({ phone, userId }).then((res) => {
-        if (res.code === '200') {
-          this.$message.success('修改电话成功！');
-        }
-      }).catch((err) => {
-        console.log(err);
-      });
+    reset() {
+      this.selectParams = {
+        user_name: '',
+        hospital_name: '',
+        page: 1,
+        rows: 10,
+      };
+      this._getUserList();
     },
-    // 删除医院方法（删除一条或者是多条）
+    // 删除用户方法（删除一条或者是多条）
     _deleteUser(data) {
       let id = '';
       if (data.type === 'multiple') {
@@ -216,28 +231,19 @@ export default {
       } else if (data.type === 'single') {
         id = JSON.stringify([data.id]);
       }
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          this.$api.deleteUserInfoBatch({ userIds: id }).then((res) => {
-            if (res.code === '200') {
-              this._getUserList();
-              this.$message({
-                type: 'success',
-                message: '删除成功!',
-              });
-            }
-          });
-        })
-        .catch(() => {
+      this.$api.deleteUserInfoBatch({ userIds: id }).then((res) => {
+        if (res.code === '200') {
+          this._getUserList();
           this.$message({
-            type: 'info',
-            message: '已取消删除',
+            type: 'success',
+            message: '删除成功!',
           });
-        });
+        }
+      });
+    },
+    formatterRole(row) {
+      console.log(row);
+      return row.role_code === '1003' ? '用户' : '管理员';
     },
     /**  **************以下为分页方法↓******************** */
     handleSizeChange(pageSize) {
