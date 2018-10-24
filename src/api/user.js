@@ -20,6 +20,8 @@ export default {
   selecteURoleByProjectId: data => http.get(getDataStringify('/user/selecteURoleByProjectId', data)),
   // POST /user/updateUInfoPassworsd 用户修改密码
   updateUInfoPassworsd: data => http.post('/user/updateUInfoPassworsd', data),
+  // POST /user/updateUserInfoByManage 管理员修改用户信息
+  updateUserInfoByManage: data => http.post('/user/updateUserInfoByManage', data),
   // POST /user/updateUserNameByUserId 用户修改用户名称
   updateUserNameByUserId: data => http.post('/user/updateUserNameByUserId', data),
   // POST /user/updateUserPhoneByUserId 管理员修改用户手机号

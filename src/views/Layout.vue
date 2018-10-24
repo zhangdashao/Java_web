@@ -39,11 +39,9 @@ export default {
   components: {
     BaseAside,
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.role = this.$store.getters.getRole;
-      this.user_name = JSON.parse(sessionStorage.getItem(auth.userKey)).user_name;
-    });
+  created() {
+    this.role = this.$store.getters.getRole;
+    this.user_name = JSON.parse(sessionStorage.getItem(auth.userKey)).user_name;
   },
   methods: {
     logout() {

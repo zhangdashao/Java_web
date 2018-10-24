@@ -61,6 +61,24 @@ export default [
           permission: '对应具体权限',
         },
       },
+      {
+        path: 'createUser',
+        name: 'CreateUser',
+        component: 'CreateUser',
+        meta: {
+          title: '创建用户',
+          permission: '对应具体权限',
+        },
+      },
+      {
+        path: 'fileDetail',
+        name: 'FileDetail',
+        component: 'FileDetail',
+        meta: {
+          title: '文件详情',
+          permission: '对应具体权限',
+        },
+      },
     ],
   },
 ];

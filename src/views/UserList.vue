@@ -5,10 +5,10 @@
       <search-wrapper>
         <el-form :inline="true" :model="selectParams">
           <el-form-item label="用户名">
-            <el-input v-model="selectParams.user_name" placeholder="请输入内容"></el-input>
+            <el-input v-model="selectParams.username" placeholder="请输入内容"></el-input>
           </el-form-item>
           <el-form-item label="医院">
-            <el-input v-model="selectParams.hospital_name" placeholder="请输入医院名"></el-input>
+            <el-input v-model="selectParams.hospitalName" placeholder="请输入医院名"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button size="mini" type="primary" icon="el-icon-search" @click="search">查询</el-button>
@@ -24,7 +24,7 @@
           </div>
           <div>
             <el-button size="mini" type="primary" @click="_deleteUser({type:'multiple',id:multipleSelection})">批量关闭</el-button>
-            <el-button size="mini" type="primary" @click="dialogAddUser = true" icon="el-icon-plus">添加用户</el-button>
+            <el-button size="mini" type="primary" @click="$router.push({name: 'CreateUser',query:{type:'add'}})" icon="el-icon-plus">添加用户</el-button>
           </div>
         </div>
       </mini-wrapper>
@@ -39,10 +39,10 @@
         <el-table-column align="center" header-align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="_deleteUser({type:'single',id:scope.row.id})">关闭用户</el-button>
+            <!-- <span style="color:#409EFF">|</span>
+            <el-button type="text">历史上传记录</el-button> -->
             <span style="color:#409EFF">|</span>
-            <el-button type="text">历史上传记录</el-button>
-            <span style="color:#409EFF">|</span>
-            <el-button type="text">编辑</el-button>
+            <el-button type="text" @click="$router.push({name: 'CreateUser', query:{id:scope.row.id,type:'edit'}})">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -50,44 +50,6 @@
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="selectParams.page" :page-sizes="[10, 20, 30, 40]" :page-size="selectParams.rows" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
         </el-pagination>
       </div>
-
-      <el-dialog :modal-append-to-body="false" title="添加用户" :visible.sync="dialogAddUser" width="600px">
-        <el-form :inline="true" :rules="rulesAddUser" :model="userInfo" ref="userInfo" class="demo-form-inline">
-          <el-form-item label="用户角色" prop="role_code">
-            <el-select style="width:182px" v-model="userInfo.role_code" placeholder="请选择">
-              <el-option v-for="(item,index) in selectUserList" :key="index" :value="item.role_code" :label="item.role_name"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="用户账号" prop="user_account">
-            <el-input v-model="userInfo.user_account"></el-input>
-          </el-form-item>
-          <el-form-item label="用户姓名" prop="user_name">
-            <el-input v-model="userInfo.user_name"></el-input>
-          </el-form-item>
-          <el-form-item label="用户密码" prop="unencrypted_pwd">
-            <el-input v-model="userInfo.unencrypted_pwd"></el-input>
-          </el-form-item>
-
-          <el-form-item label="手机号" prop="phone">
-            <el-input v-model="userInfo.phone"></el-input>
-          </el-form-item>
-
-          <!-- <el-form-item v-if="false" label="医院主联系人" prop="hospital_primary">
-            <el-select v-model="userInfo.hospital_primary" placeholder="请选择">
-              <el-option label="是" value=1>是</el-option>
-              <el-option label="否" value=0>否</el-option>
-            </el-select>
-          </el-form-item> -->
-          <el-form-item v-if="userInfo.role_code === '1003'" label="医院名称" prop="hospital_name">
-            <el-input v-model="userInfo.hospital_name"></el-input>
-          </el-form-item>
-
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button size="mini" @click="dialogAddUser = false">取 消</el-button>
-          <el-button size="mini" type="primary" @click="_confirmAddUser">确 定</el-button>
-        </span>
-      </el-dialog>
 
     </padding-wrapper>
   </div>
@@ -111,23 +73,11 @@ export default {
   },
   data() {
     return {
-      dialogAddUser: false,
       selectParams: {
-        user_name: '',
-        hospital_name: '',
+        username: '',
+        hospitalName: '',
         page: 1,
         rows: 10,
-      },
-      userInfo: {
-        user_account: '',
-        unencrypted_pwd: '',
-        againNewPassword: '',
-        user_name: '',
-        role_code: '',
-        hospital_id: '-1',
-        hospital_name: '',
-        phone: '',
-        hospital_primary: '1',
       },
       selectUserList: [],
       userList: [],
@@ -178,31 +128,6 @@ export default {
       this.$api.selecteURoleByProjectId().then((res) => {
         if (res.code === '200') {
           this.selectUserList = res.data;
-        }
-      });
-    },
-    _confirmAddUser() {
-      this.$refs.userInfo.validate((valid) => {
-        if (valid) {
-          this.userInfo.againNewPassword = this.userInfo.unencrypted_pwd;
-          if (this.userInfo.role_code === '1000') {
-            this.userInfo.hospital_name = '';
-          }
-          this.$api.insertUInfo(this.userInfo).then((res) => {
-            if (res.code === '200') {
-              this.dialogAddUser = false;
-              this.$message.success('添加成功！');
-              for (const key of Object.keys(this.userInfo)) {
-                if (key !== 'hospital_id') {
-                  this.userInfo[key] = '';
-                }
-              }
-              this._getUserList();
-            }
-          });
-        } else {
-          console.log('error submit!!');
-          return false;
         }
       });
     },

@@ -4,6 +4,8 @@ import { getDataStringify } from '../util/utils';
 export default {
   // POST /file/deleteManageUploadFile 管理员删除自己上传的公共文件
   deleteManageUploadFile: data => http.post('/file/deleteManageUploadFile', data),
+  // POST /file/addFileInfoComment 添加文件评论
+  addFileInfoComment: data => http.post('/file/addFileInfoComment', data),
   // GET /file/downFile 下载文件
   downFile: data => http.get(getDataStringify('/file/downFile', data), { responseType: 'blob' }),
   // GET /file/downFileBatch 批量下载报告附件文件
@@ -14,6 +16,14 @@ export default {
   selectFileDeleteList: data => http.get(getDataStringify('/file/selectFileDeleteList', data)),
   // GET /file/selectFileDownRecordList 查询文件下载列表
   selectFileDownRecordList: data => http.get(getDataStringify('/file/selectFileDownRecordList', data)),
+
+
+  // GET /file/selectFileInfoCommentList 查询文件评论列表
+  selectFileInfoCommentList: data => http.get(getDataStringify('/file/selectFileInfoCommentList', data)),
+  // GET /file/selectFileInfoDetail 查询文件详细信息
+  selectFileInfoDetail: data => http.get(getDataStringify('/file/selectFileInfoDetail', data)),
+
+
   // GET /file/selectFileListManage 管理员查询文件列表
   selectFileListManage: data => http.get(getDataStringify('/file/selectFileListManage', data)),
   // GET /file/selectFileList 查询文件列表，管理员和普通用户都能用
