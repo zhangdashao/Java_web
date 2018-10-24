@@ -42,7 +42,7 @@
             <span style="color:#409EFF">|</span>
             <el-button type="text">历史上传记录</el-button>
             <span style="color:#409EFF">|</span>
-            <el-button type="text">文件管理</el-button>
+            <el-button type="text">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

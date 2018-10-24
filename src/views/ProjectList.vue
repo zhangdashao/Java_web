@@ -1,5 +1,6 @@
 <template>
     <div class="project-list">
+    <bg-title title="项目管理"></bg-title>
         <padding-wrapper>
             <search-wrapper>
                 <el-form :inline="true" :model="listForm" class="listForm">
@@ -123,14 +124,14 @@ export default {
       this.multipleSelection = val;
     },
     searchProjectList() {
-      this.$api.getProjectList(deepCloneJson(this.listForm)).then(({ data }) => {
+      this.$api.selectProjectList(deepCloneJson(this.listForm)).then(({ data }) => {
         this.projectList = data.projectList;
         this.totalCount = data.count;
       });
     },
     delProject(delData) {
       showConfirm(this).then(() => {
-        this.$api.delProject(delData).then((res) => {
+        this.$api.deletePInfo({ projectId: delData }).then((res) => {
           if (res.code === '200') {
             this.$message.success('删除成功');
             this.searchProjectList();
@@ -176,7 +177,7 @@ export default {
       };
       if (this.operateSign === 'add') {
         this.projectLoading = true;
-        this.$api.addProject(postData).then((res) => {
+        this.$api.addPInfo(postData).then((res) => {
           if (res.code === '200') {
             this.$message.success('创建成功');
             this.searchProjectList();
@@ -187,7 +188,7 @@ export default {
       } else {
         this.projectLoading = true;
         postData.id = this.editId;
-        this.$api.putProject(postData).then((res) => {
+        this.$api.updatePInfo(postData).then((res) => {
           if (res.code === '200') {
             this.$message.success('修改成功');
             this.searchProjectList();
