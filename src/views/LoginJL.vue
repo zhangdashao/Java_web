@@ -39,7 +39,7 @@
               <el-button @click="getMsgCode" :disabled="waitCoding" type="text">{{valCodePrompt}}</el-button>
             </el-col>
           </el-row>
-          <el-row v-else>
+          <el-row v-show="!usbKey">
             <el-col :span="5" :offset="1">
               <el-form-item label-width="300px;">
                 <i style="color:red" class="iconfont icon-tishi"></i>
@@ -78,7 +78,8 @@ import { mapMutations, mapActions } from 'vuex';
 import { deepCloneJson } from '$global/global-function';
 import auth from '../util/auth';
 import localMenu from '../routerconfig/admin';
-import { load, login_onclick } from '../util/usbKey';
+import { login_onclick } from '../util/usbKey';
+import { SoftKey6W } from '../util/Syunew6';
 
 export default {
   name: 'LoginJL',
@@ -94,6 +95,7 @@ export default {
         SMSCode: '',
         phone: '',
         usbKey: '',
+        s_pnp: null,
       },
       projectList: [],
       rules: {
@@ -110,16 +112,39 @@ export default {
   },
   mounted() {
     this.getProjectList();
-    load().then((res) => {
-      console.log(res);
-      if (res) {
-        this.usbKey = true;
-      } else {
-        this.usbKey = false;
-      }
-    });
+    this.load();
+  },
+  destroyed() {
+    this.s_pnp.Socket_UK.close();
   },
   methods: {
+    load() {
+      const me = this;
+      // 如果是IE10及以下浏览器，则跳过不处理
+      if (navigator.userAgent.indexOf('MSIE') > 0 && !navigator.userAgent.indexOf('opera') > -1) return;
+      try {
+        this.s_pnp = new SoftKey6W();
+
+
+        // 在使用事件插拨时，注意，一定不要关掉Sockey，否则无法监测事件插拨
+        this.s_pnp.Socket_UK.onmessage = function got_packet(Msg) {
+          const PnpData = JSON.parse(Msg.data);
+          if (PnpData.type == 'PnpEvent')// 如果是插拨事件处理消息
+          {
+            if (PnpData.IsIn) {
+              console.log(5678);
+              me.usbKey = true;
+              // alert(`UKEY已被插入，被插入的锁的路径是：${PnpData.DevicePath}`);
+            } else {
+              me.usbKey = false;
+              // alert(`UKEY已被拨出，被拨出的锁的路径是：${PnpData.DevicePath}`);
+            }
+          }
+        };
+      } catch (e) {
+        console.log(e);
+      }
+    },
     doLogin() {
       this.$refs.form.validate((valid) => {
         if (valid) {
