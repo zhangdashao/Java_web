@@ -82,8 +82,11 @@ export default {
   },
   data() {
     const validatePass = (rule, value, callback) => {
+      const pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
       if (value === '') {
         callback(new Error('请输入密码'));
+      } else if (!pPattern.test(value)) {
+        callback(new Error('密码中要包括数字大小写字母，不得少于6位'));
       } else {
         if (this.Info.unencrypted_pwd !== '') {
           this.$refs.Info.validateField('againNewPassword');

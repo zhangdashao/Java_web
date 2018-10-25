@@ -11,9 +11,6 @@
             <el-form-item label="姓名" prop="name">
               <el-input v-model="Info.name"></el-input>
             </el-form-item>
-            <el-form-item v-if="role ==='admin'" label="手机号" prop="phone">
-              <el-input v-model="Info.phone"></el-input>
-            </el-form-item>
             <el-form-item label="旧密码" prop="user_password">
               <el-input type="password" v-model="Info.user_password"></el-input>
             </el-form-item>
@@ -26,7 +23,7 @@
           </el-form>
         </div>
         <div class="btn-wrapper">
-          <el-button size="mini" @click="resetForm()">&nbsp;&nbsp;&nbsp;返回&nbsp;&nbsp;&nbsp;</el-button>
+          <!-- <el-button size="mini" @click="resetForm()">&nbsp;&nbsp;&nbsp;取消&nbsp;&nbsp;&nbsp;</el-button> -->
           <el-button size="mini" type="primary" @click="submitForm('Info')">&nbsp;&nbsp;&nbsp;确认&nbsp;&nbsp;&nbsp;</el-button>
         </div>
       </search-wrapper>
@@ -37,9 +34,7 @@
 <script>
 import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
-import auth from '../util/auth';
 
-const INFO = auth.getUser();
 export default {
   name: 'Setting',
   components: {
@@ -71,8 +66,11 @@ export default {
       }
     };
     const validatePass = (rule, value, callback) => {
+      const pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
       if (value === '') {
         callback(new Error('请输入密码'));
+      } else if (!pPattern.test(value)) {
+        callback(new Error('密码中要包括数字大小写字母，不得少于6位'));
       } else {
         if (this.Info.checkPass !== '') {
           this.$refs.Info.validateField('checkPass');
@@ -146,14 +144,7 @@ export default {
           };
           const updateName = this.$api.updateUserNameByUserId({ user_name });
           const updatePassword = this.$api.updateUInfoPassworsd(postData);
-          let updatePhone = null;
-          if (this.role === 'admin') {
-            updatePhone = this.$api.updateUserPhoneByUserId({
-              phone: this.Info.phone,
-              userId: this.$store.state.id,
-            });
-          }
-          Promise.all([updateName, updatePassword, updatePhone]).then(() => {
+          Promise.all([updateName, updatePassword]).then(() => {
             this.$message.success('修改信息成功！');
           });
         }

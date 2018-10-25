@@ -14,17 +14,7 @@ export default [
         },
       },
 
-      {
-        path: 'fileList',
-        name: 'FileList',
-        component: 'FileList',
-        meta: {
 
-          title: '文件管理列表',
-          permission: '对应具体权限',
-          disable: 'true',
-        },
-      },
       {
         path: 'wasteBox',
         name: 'WasteBox',
