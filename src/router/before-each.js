@@ -24,7 +24,7 @@ export default () => {
     }
     if (!to.matched.length) {
       next({
-        path: '/commonFile',
+        path: '/fileList',
       });
     }
   });

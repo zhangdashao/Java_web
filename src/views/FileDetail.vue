@@ -198,8 +198,8 @@ export default {
       // 目标状态：0表示已删除，1表示使用中，2表示垃圾箱
       this.$api.updateFileInfoStatus({ fileIds, targetStatus: 2 }).then((res) => {
         if (res.code === '200') {
-          this.selectAdminOrUser();
           this.$message.success('操作成功！！！');
+          this.$router.go(-1);
         }
       }, () => {
         this.$message.warning('操作出错了！');

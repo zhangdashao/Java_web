@@ -1,10 +1,9 @@
 <template>
     <div class="BaseAside">
         <el-menu :default-active="active" class="el-menu-vertical-demo" background-color="#222B42" text-color="#fff" active-text-color="#ffd04b">
-            <el-menu-item index="/commonFile" @click="linkTo('/commonFile')">
-                <!-- <i class="el-icon-location"></i> -->
+            <!-- <el-menu-item index="/commonFile" @click="linkTo('/commonFile')">
                 <span slot="title">公共文件</span>
-            </el-menu-item>
+            </el-menu-item> -->
 
             <el-menu-item v-show="!changeBoolean(item.meta.disable)"  v-for="(item,Cindex) in getMenu[0].children" :key="Cindex" :index="`/${item.path}`" @click="linkTo(item.path)">
                 <!-- <i class="el-icon-location"></i> -->

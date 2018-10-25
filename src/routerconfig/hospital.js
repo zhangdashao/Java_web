@@ -21,6 +21,16 @@ export default [
           permission: '对应具体权限',
         },
       },
+      {
+        path: 'fileDetail',
+        name: 'FileDetail',
+        component: 'FileDetail',
+        meta: {
+          title: '文件详情',
+          permission: '对应具体权限',
+          disable: 'true',
+        },
+      },
 
 
     ],

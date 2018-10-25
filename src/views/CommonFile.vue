@@ -41,7 +41,7 @@
             <span v-if="role === 'admin'" style="color:#409EFF">|</span>
             <el-button v-if="role === 'admin'" type="text" @click="_getDownloadRecord(scope.row.id)">下载记录</el-button>
             <span style="color:#409EFF">|</span>
-            <el-button type="text" @click="_getDownloadRecord(scope.row.id)">详情</el-button>
+            <el-button type="text" @click="$router.push({name: 'FileDetail',query:{id:scope.row.id}})">详情</el-button>
           </template>
         </el-table-column>
       </el-table>

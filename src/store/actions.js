@@ -33,7 +33,7 @@ export const handlePermission = ({ commit }, { menuData, id, role_code }) => {
   //   VM.$router.push({ path: '/userList' });
   // } else if (role_code === '1003') { VM.$router.push({ path: '/fileList' }); }
   if (VM.$route.path === '/login' || VM.$route.path === '/loginjl') {
-    VM.$router.push({ path: '/commonFile' });
+    VM.$router.push({ path: '/fileList' });
   }
 };
 
