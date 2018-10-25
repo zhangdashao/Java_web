@@ -3,7 +3,7 @@
     <padding-wrapper>
       <search-wrapper>
         <div class="info-warpper">
-          <h2><i style="font-size:30px" class="iconfont icon--pdf-file-format-"></i> {{fileInfo.file_original_name}}</h2>
+          <h2><i style="font-size:30px" :class="['iconfont',fileInfo.type]"></i> {{fileInfo.file_original_name}}</h2>
           <el-row :gutter="20">
             <el-col :span="3">
               <div style="padding:10px 20px 0">
@@ -92,6 +92,7 @@
 <script>
 import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
+import { getFileTypeIcon } from '../util/utils';
 
 export default {
   name: 'FileDetail',
@@ -138,7 +139,7 @@ export default {
           } else {
             res.data.status = '垃圾箱';
           }
-          this.fileInfo = res.data;
+          this.fileInfo = getFileTypeIcon(res.data);
         }
       }).catch(() => {
         this.$message.warning('获取文件信息失败！');

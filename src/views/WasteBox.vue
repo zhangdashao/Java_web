@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="phone" label="文件名">
           <template scope="scope">
-            <i class="iconfont icon--zip-compressed-f"></i>
+            <i :class="['iconfont',scope.role.type]"></i>
             <span>{{scope.row.file_original_name}}</span>
           </template>
           <el-input>12</el-input>
@@ -56,6 +56,7 @@ import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
 import SearchBar from '$base-c/SearchBar';
 import MiniWrapper from '$base-c/MiniWrapper';
+import { getFileTypeIcon } from '../util/utils';
 
 /** 此页面两个角色公用 */
 export default {
@@ -100,7 +101,7 @@ export default {
       delete copyParams.fuzzyname;
       delete copyParams.uploadUserName;
       this.$api.selectUserFileList(copyParams).then((res) => {
-        this.fileList = res.data.fileList;
+        this.fileList = res.data.fileList.map(item => getFileTypeIcon(item));
         this.totalCount = res.data.count;
       });
     },
@@ -111,7 +112,7 @@ export default {
       copyParams.type = 4;
       delete copyParams.fuzzyname;
       this.$api.selectUserFileList(copyParams).then((res) => {
-        this.fileList = res.data.fileList;
+        this.fileList = res.data.fileList.map(item => getFileTypeIcon(item));
         this.totalCount = res.data.count;
       });
     },

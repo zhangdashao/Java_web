@@ -19,7 +19,7 @@
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="phone" label="文件名">
           <template scope="scope">
-            <i class="iconfont icon--zip-compressed-f"></i>
+            <i :class="['iconfont',scope.row.type]"></i>
             <span>{{scope.row.file_original_name}}</span>
           </template>
           <el-input>12</el-input>
@@ -53,6 +53,7 @@ import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
 import SearchBar from '$base-c/SearchBar';
 import MiniWrapper from '$base-c/MiniWrapper';
+import { getFileTypeIcon } from '../util/utils';
 
 /** 此页面两个角色公用 */
 export default {
@@ -98,7 +99,7 @@ export default {
       delete copyParams.startTime;
       delete copyParams.endTime;
       this.$api.selectFileDeleteList(copyParams).then((res) => {
-        this.fileList = res.data.fileList;
+        this.fileList = res.data.fileList.map(item => getFileTypeIcon(item));
         this.totalCount = res.data.count;
       });
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="login-box">
+    <div v-show="!isHelp" class="login-box">
       <div class="white_wrap">
         <h1 class="mb-30">嘉量文件管理平台</h1>
         <el-form class="login-form" ref="form" status-icon :model="form" :rules="rules" label-width="80px" label-position="left">
@@ -15,7 +15,8 @@
           <el-row>
             <el-col :span="9">
               <el-form-item label="密　码" prop="user_password">
-                <el-input @keydown.enter.native="doLogin" type="password" v-model="form.user_password"></el-input>
+                <el-input v-show="isPlug" @keydown.enter.native="doLogin" type="password" v-model="form.user_password"></el-input>
+                <span v-show="!isPlug" style="color:#409EFF">点击安装U盾插件</span>
               </el-form-item>
             </el-col>
           </el-row>
@@ -40,10 +41,16 @@
             </el-col>
           </el-row>
           <el-row v-show="!usbKey">
-            <el-col :span="5" :offset="1">
-              <el-form-item label-width="300px;">
-                <i style="color:red" class="iconfont icon-tishi"></i>
-                <span style="color:red">请插入U盾！</span>
+            <el-col :span="6" :offset="1">
+              <el-form-item label-width="390px;">
+                <div v-show="isPlug">
+                  <i style="color:red" class="iconfont icon-tishi"></i>
+                  <span style="color:red">请插入U盾！</span>
+                </div>
+                <div v-show="!isPlug">
+                  <i style="color:red" class="iconfont icon-tishi"></i>
+                  <span style="color:red">无法安装插件？ <i @click="isHelp = true" style="color:#409EFF;cursor:pointer">点击这里</i></span>
+                </div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -70,6 +77,11 @@
         </el-form>
       </div>
     </div>
+    <div v-show="isHelp" class="login-box">
+        <div class="white_wrap help">
+          <i @click="isHelp = false"></i>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -88,6 +100,9 @@ export default {
       valCodePrompt: '获取短信验证码',
       waitCoding: false,
       usbKey: false,
+      s_pnp: null,
+      isPlug: true,
+      isHelp: false,
       form: {
         user_account: '',
         user_password: '',
@@ -95,7 +110,6 @@ export default {
         SMSCode: '',
         phone: '',
         usbKey: '',
-        s_pnp: null,
       },
       projectList: [],
       rules: {
@@ -290,6 +304,19 @@ export default {
       box-sizing: border-box;
       padding: 50px;
       background: url("../assets/image/login_img.png") 392px 100px no-repeat;
+    }
+    .help{
+      background: url("../assets/image/help.png") 0 0 no-repeat;
+      background-size: 100% 100%;
+      position: relative;
+      i{
+        position: absolute;
+        top:0;
+        right: 0;
+        display: block;
+        width: 35px;
+        height: 35px;
+      }
     }
     h1 {
       color: #5599dd;
