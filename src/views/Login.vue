@@ -120,6 +120,11 @@ export default {
   mounted() {
     this.URL = MOCK_API;
     this.load();
+    login_onclick2().then((res) => {
+      if (res) {
+        this.usbKey = true;
+      }
+    });
   },
   destroyed() {
     this.s_pnp.Socket_UK.close();

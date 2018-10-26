@@ -41,7 +41,7 @@
               </el-col>
             </el-row>
             <el-row :gutter="20">
-              <el-col :span="5">
+              <el-col :span="7">
                 <el-form-item label="角色" prop="name">
                   <el-radio v-model="Info.role_code" label="1003">用户</el-radio>
                   <el-radio v-model="Info.role_code" label="1000">管理员</el-radio>
@@ -136,7 +136,13 @@ export default {
       },
     };
   },
-
+  watch: {
+    'Info.role_code': function (val, oldVal) {
+      if (val === '1000') {
+        this.Info.hospital_name = '';
+      }
+    },
+  },
   mounted() {
     console.log(this.$route.query);
     this.judgeOperate(this.$route.query);

@@ -38,8 +38,8 @@
             <el-button v-if="role ==='user'" type="text" @click="_deleteFile({type: 'single',id:scope.row.id})">删除</el-button>
             <span v-if="role ==='user'" style="color:#409EFF">|</span>
             <el-button type="text" @click="_downloadFile({type:'single',id:scope.row.id,name:scope.row.file_original_name})">下载</el-button>
-            <span v-if="role === 'user'" style="color:#409EFF">|</span>
-            <el-button v-if="role === 'user'" type="text" @click="_getDownloadRecord(scope.row.id)">下载记录</el-button>
+            <span style="color:#409EFF">|</span>
+            <el-button type="text" @click="_getDownloadRecord(scope.row.id)">下载记录</el-button>
             <span style="color:#409EFF">|</span>
             <el-button type="text" @click="$router.push({name: 'FileDetail',query:{id:scope.row.id}})">详情</el-button>
           </template>
@@ -109,9 +109,6 @@ export default {
   mounted() {
     this.role = this.$store.getters.getRole;
     this.selectAdminOrUser();
-    if (this.role === 'admin') {
-      this._selectNoDownloadCount();
-    }
   },
   methods: {
     _getUserFileList() {

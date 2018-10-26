@@ -22,6 +22,7 @@ export default [
         meta: {
           title: '回收站',
           permission: '对应具体权限',
+          disable: 'true',
         },
       },
       {
@@ -40,6 +41,16 @@ export default [
         meta: {
           title: '用户管理',
           permission: '对应具体权限',
+        },
+      },
+      {
+        path: 'userDetail',
+        name: 'UserDetail',
+        component: 'UserDetail',
+        meta: {
+          title: '用户上传文件',
+          permission: '对应具体权限',
+          disable: 'true',
         },
       },
       {

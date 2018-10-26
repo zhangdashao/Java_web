@@ -5,11 +5,13 @@
     </el-form-item>
     <el-form-item label="类型">
       <el-select v-model="searchForm.fileType" clearable placeholder="全部类型">
+        <el-option label="全部" value=''></el-option>
         <el-option v-for="(item,index) in typeList" :key="index" :label="item.dic_name" :value="item.dic_value"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item v-if="!waste" label="状态">
       <el-select v-model="searchForm.isDown" clearable placeholder="全部状态">
+        <el-option label="全部" value=''></el-option>
         <el-option label="已下载" value=2></el-option>
         <el-option label="未下载" value=1></el-option>
       </el-select>

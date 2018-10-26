@@ -36,11 +36,11 @@
         <el-table-column align="center" header-align="center" prop="hospital_name" label="角色" :formatter="formatterRole"></el-table-column>
         <el-table-column align="center" header-align="center" prop="phone" label="手机号"></el-table-column>
         <el-table-column align="center" header-align="center" prop="modify_time" label="更新时间"></el-table-column>
-        <el-table-column align="center" header-align="center" label="操作">
+        <el-table-column align="right" header-align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="_deleteUser({type:'single',id:scope.row.id})">关闭用户</el-button>
-            <!-- <span style="color:#409EFF">|</span>
-            <el-button type="text">历史上传记录</el-button> -->
+            <span v-show="scope.row.role_code === '1003'" style="color:#409EFF">|</span>
+            <el-button v-show="scope.row.role_code === '1003'" type="text" @click="$router.push({name: 'UserDetail',query:{id:scope.row.id}})">历史上传</el-button>
             <span style="color:#409EFF">|</span>
             <el-button type="text" @click="$router.push({name: 'CreateUser', query:{id:scope.row.id,type:'edit'}})">编辑</el-button>
           </template>
