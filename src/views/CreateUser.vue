@@ -43,8 +43,8 @@
             <el-row :gutter="20">
               <el-col :span="7">
                 <el-form-item label="角色" prop="name">
-                  <el-radio v-model="Info.role_code" label="1003">用户</el-radio>
-                  <el-radio v-model="Info.role_code" label="1000">管理员</el-radio>
+                  <el-radio :disabled="!isAdd" v-model="Info.role_code" label="1003">用户</el-radio>
+                  <el-radio :disabled="!isAdd" v-model="Info.role_code" label="1000">管理员</el-radio>
                 </el-form-item>
               </el-col>
               <el-col :span="5">

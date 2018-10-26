@@ -17,12 +17,13 @@
       <el-table :data="fileList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column align="center" header-align="center" prop="phone" label="文件名">
+        <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="350">
           <template scope="scope">
-            <i :class="['iconfont',scope.row.type]"></i>
-            <span>{{scope.row.file_original_name}}</span>
+            <div style="display:flex;align-items:center">
+              <i :style="{'color':scope.row.color}" :class="['iconfont',scope.row.type]"></i>
+              <span :title="scope.row.file_original_name" style="width:300px;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;">{{scope.row.file_original_name}}</span>
+            </div>
           </template>
-          <el-input>12</el-input>
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="file_type" :formatter="formatterType" label="文件类型"></el-table-column>
         <el-table-column align="center" header-align="center" prop="upload_time" label="上传时间"></el-table-column>
@@ -146,12 +147,10 @@ export default {
     },
 
     formatterStatus(row) {
-      if (row.status === 0) {
-        return '已删除';
-      } else if (row.status === 1) {
-        return '使用中';
-      } else if (row.status === 2) {
-        return '垃圾箱';
+      if (row.download_count === 0) {
+        return '未下载';
+      } else {
+        return '已下载';
       }
     },
     formatterType(row) {

@@ -45,14 +45,15 @@ export default {
   },
   methods: {
     logout() {
+      const loginPath = auth.getLoginPath();
       this.$api.logOut().then((res) => {
         if (res.code === '200') {
           auth.logout();
-          this.$router.push('/login');
+          this.$router.push(loginPath);
         }
       }, () => {
         auth.logout();
-        this.$router.push('/login');
+        this.$router.push(loginPath);
       });
     },
   },

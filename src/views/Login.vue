@@ -2,7 +2,7 @@
   <div class="login">
     <div v-show="!isHelp" class="login-box">
       <div class="white_wrap">
-        <h1 class="mb-30">嘉量文件管理平台</h1>
+        <h1 class="mb-30">满意云文件管理平台</h1>
         <el-form class="login-form" ref="form" status-icon :model="form" :rules="rules" label-width="80px" label-position="left">
 
           <el-row>
@@ -223,7 +223,7 @@ export default {
       })
         .then((res) => {
           if (res.code === '200') {
-            this.$message.success(`验证码发送成功！！${res.data}`);
+            this.$message.success('验证码发送成功！！');
           }
         })
         .then(() => {

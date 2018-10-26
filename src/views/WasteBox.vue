@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="phone" label="文件名">
           <template scope="scope">
-            <i :class="['iconfont',scope.role.type]"></i>
+            <i :class="['iconfont',scope.row.type]"></i>
             <span>{{scope.row.file_original_name}}</span>
           </template>
           <el-input>12</el-input>
@@ -172,12 +172,10 @@ export default {
     },
 
     formatterStatus(row) {
-      if (row.status === 0) {
-        return '已删除';
-      } else if (row.status === 1) {
-        return '使用中';
-      } else if (row.status === 2) {
-        return '垃圾箱';
+      if (row.download_count === 0) {
+        return '未下载';
+      } else {
+        return '已下载';
       }
     },
     formatterType(row) {
