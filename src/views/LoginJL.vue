@@ -16,7 +16,7 @@
             <el-col :span="9">
               <el-form-item label="密　码" prop="user_password">
                 <el-input v-show="isPlug" @keydown.enter.native="doLogin" type="password" v-model="form.user_password"></el-input>
-                <span v-show="!isPlug" style="color:#409EFF">点击安装U盾插件</span>
+                <a v-show="!isPlug" style="color:#409EFF;cursor:pointer" :href="`${URL}/util/downDrive`">点击安装U盾插件</a>
               </el-form-item>
             </el-col>
           </el-row>
@@ -90,13 +90,15 @@ import { mapMutations, mapActions } from 'vuex';
 import { deepCloneJson } from '$global/global-function';
 import auth from '../util/auth';
 import localMenu from '../routerconfig/admin';
-import { login_onclick } from '../util/usbKey';
-import { SoftKey6W } from '../util/Syunew6';
+import { login_onclick2 } from '../util/usbKey';
+import { SoftKey3W } from '../util/Syunew6';
+import { MOCK_API } from '../util/request';
 
 export default {
   name: 'LoginJL',
   data() {
     return {
+      URL: '',
       valCodePrompt: '获取短信验证码',
       waitCoding: false,
       usbKey: false,
@@ -125,6 +127,7 @@ export default {
     };
   },
   mounted() {
+    this.URL = MOCK_API;
     this.getProjectList();
     this.load();
   },
@@ -134,29 +137,29 @@ export default {
   methods: {
     load() {
       const me = this;
-      // 如果是IE10及以下浏览器，则跳过不处理
+      // 如果是IE10及以下浏览器，则跳过不处理，
       if (navigator.userAgent.indexOf('MSIE') > 0 && !navigator.userAgent.indexOf('opera') > -1) return;
       try {
-        this.s_pnp = new SoftKey6W();
-
-
+        this.s_pnp = new SoftKey3W();
         // 在使用事件插拨时，注意，一定不要关掉Sockey，否则无法监测事件插拨
         this.s_pnp.Socket_UK.onmessage = function got_packet(Msg) {
           const PnpData = JSON.parse(Msg.data);
-          if (PnpData.type == 'PnpEvent')// 如果是插拨事件处理消息
-          {
+          // 如果是插拨事件处理消息
+          if (PnpData.type === 'PnpEvent') {
             if (PnpData.IsIn) {
-              console.log(5678);
               me.usbKey = true;
-              // alert(`UKEY已被插入，被插入的锁的路径是：${PnpData.DevicePath}`);
             } else {
               me.usbKey = false;
-              // alert(`UKEY已被拨出，被拨出的锁的路径是：${PnpData.DevicePath}`);
             }
           }
         };
+
+        this.s_pnp.Socket_UK.onerror = function (e) {
+          me.isPlug = false;
+        };
       } catch (e) {
-        console.log(e);
+        alert(`${e.name}: ${e.message}`);
+        return false;
       }
     },
     doLogin() {
@@ -211,7 +214,7 @@ export default {
     },
     /** 获取短信验证码 */
     getMsgCode() {
-      login_onclick()
+      login_onclick2()
         .then((res) => {
           if (res) {
             this.form.usbKey = res;

@@ -4,8 +4,8 @@ import auth from '$util/auth';
 import Router from '../router/index';
 
 
-// export const MOCK_API = 'http://118.190.150.55/file_system';
-export const MOCK_API = 'http://192.168.1.140:8080/file_system';
+export const MOCK_API = 'http://118.190.150.55/file_system';
+// export const MOCK_API = 'http://192.168.1.140:8080/file_system';
 
 // create an axios instance
 const service = axios.create({
