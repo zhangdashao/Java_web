@@ -71,8 +71,8 @@
 import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
 import auth from '../util/auth';
-import { login_onclick } from '../util/usbKey';
-import { SoftKey6W } from '../util/Syunew6';
+import { login_onclick2 } from '../util/usbKey';
+import { SoftKey3W } from '../util/Syunew6';
 
 export default {
   name: 'CreateUser',
@@ -152,16 +152,16 @@ export default {
       // 如果是IE10及以下浏览器，则跳过不处理
       if (navigator.userAgent.indexOf('MSIE') > 0 && !navigator.userAgent.indexOf('opera') > -1) return;
       try {
-        this.s_pnp = new SoftKey6W();
+        this.s_pnp = new SoftKey3W();
 
 
         // 在使用事件插拨时，注意，一定不要关掉Sockey，否则无法监测事件插拨
         this.s_pnp.Socket_UK.onmessage = function got_packet(Msg) {
           const PnpData = JSON.parse(Msg.data);
-          if (PnpData.type == 'PnpEvent')// 如果是插拨事件处理消息
+          if (PnpData.type === 'PnpEvent')// 如果是插拨事件处理消息
           {
             if (PnpData.IsIn) {
-              login_onclick().then((res) => {
+              login_onclick2().then((res) => {
                 me.usbKey = true;
                 me.Info.usbKey = res;
               });
