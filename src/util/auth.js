@@ -6,6 +6,7 @@ export default {
   pathKey: '_loginPath',
   optKey: '_optKey',
   projectIdKey: '_projectIdKey',
+  projectNameKey: '_projectNameKey',
   judgeLogin() {
     return sessionStorage.getItem(this.loginKey);
   },
@@ -53,6 +54,12 @@ export default {
   },
   getProjectId() {
     return sessionStorage.getItem(this.projectIdKey);
+  },
+  setProjectName(value) {
+    sessionStorage.setItem(this.projectNameKey, value);
+  },
+  getProjectName() {
+    return sessionStorage.getItem(this.projectNameKey);
   },
   codeToRole: {
     1000: '管理员',

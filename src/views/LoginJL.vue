@@ -184,8 +184,11 @@ export default {
               hospital_id,
               user_account,
               id,
+              project_id,
+              project_name,
             } = data;
-            auth.setProjectId(this.form.project_id);
+            auth.setProjectId(project_id);
+            auth.setProjectName(project_name);
             auth.setLoginPath({ name: 'LoginJL' });
             auth.setUser(
               JSON.stringify({

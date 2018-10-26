@@ -80,7 +80,19 @@ service.interceptors.response.use(
    * 以下代码均为样例，请结合自生需求加以修改，若不需要，则可删除
    */
   (response) => {
-    console.log(response);
+    if (response.data.status === 10001) {
+      console.log(44444);
+      Message({
+        message: response.data.desc,
+        type: 'error',
+        duration: 5 * 1000,
+      });
+      Promise.reject(`error ${response.data.desc}`);
+      setTimeout(() => {
+        Router.push(auth.getLoginPath());
+        auth.logout();
+      }, 1000);
+    }
     if (!response.data.code) {
       return response.data;
     }
@@ -92,18 +104,6 @@ service.interceptors.response.use(
     //   // return downloadUrl(response.request.responseURL);
     // }
     const res = response.data;
-    if (res.status === 10001) {
-      Message({
-        message: res.desc,
-        type: 'error',
-        duration: 5 * 1000,
-      });
-      Promise.reject(`error ${res.desc}`);
-      setTimeout(() => {
-        Router.push(auth.getLoginPath());
-        auth.logout();
-      }, 1000);
-    }
     if (res.code === '200' || res.code === '300') {
       return res;
     } else {

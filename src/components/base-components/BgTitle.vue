@@ -1,9 +1,11 @@
 <template>
     <div class="bg-title">
-        <h1>{{title}}</h1>
+        <h1>{{project+title}}</h1>
     </div>
 </template>
 <script>
+import auth from '../../util/auth';
+
 export default {
   name: 'BaseBgTitle',
   props: {
@@ -11,6 +13,14 @@ export default {
       type: String,
       default: '',
     },
+  },
+  data() {
+    return {
+      project: '',
+    };
+  },
+  created() {
+    this.project = `${auth.getProjectName(auth.projectNameKey)}-`;
   },
 };
 </script>
