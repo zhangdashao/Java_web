@@ -182,7 +182,7 @@ export default {
               } = data;
               auth.setProjectId(project_id);
               auth.setProjectName(project_name);
-              auth.setLoginPath({ name: 'LoginJL' });
+              auth.setLoginPath({ name: 'Login' });
               auth.setUser(
                 JSON.stringify({ user_name, phone, hospital_id, user_account, id }),
               );

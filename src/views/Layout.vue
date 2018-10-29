@@ -13,11 +13,11 @@
                         您好,{{user_name}}　　{{role === 'admin'? '管理员' : '医院用户'}}|
                         <!-- <a href="#">设置</a>| -->
                         <a href="#" @click="logout">退出</a>
-                        <span style=" margin: 0 30px;">
+                        <!-- <span style=" margin: 0 30px;">
                             <el-badge :value="100" :max="10" class="item">
                                 <el-button type="danger" icon="el-icon-message" round></el-button>
                             </el-badge>
-                        </span>
+                        </span> -->
                     </div>
                 </el-header>
                 <el-main>
