@@ -1,5 +1,9 @@
 <template>
-  <div class="report-list" v-loading="loadSign">
+  <div class="report-list"
+  v-loading="loadSign"
+  element-loading-text="正在下载中..."
+  element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <bg-title :title="role === 'user' ? '我的文件' : '用户文件'"></bg-title>
     <padding-wrapper>
       <search-wrapper>

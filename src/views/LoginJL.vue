@@ -43,9 +43,13 @@
           <el-row v-show="!usbKey">
             <el-col :span="6" :offset="1">
               <el-form-item label-width="390px;">
-                <div v-show="isPlug">
+                <div v-show="isPlug  && !isIE9">
                   <i style="color:red" class="iconfont icon-tishi"></i>
                   <span style="color:red">请插入U盾！</span>
+                </div>
+                <div v-show="isIE9">
+                  <i style="color:red" class="iconfont icon-tishi"></i>
+                  <span style="color:red;">对不起，请使用高版本浏览器</span>
                 </div>
                 <div v-show="!isPlug">
                   <i style="color:red" class="iconfont icon-tishi"></i>
@@ -91,6 +95,7 @@ import { deepCloneJson } from '$global/global-function';
 import auth from '../util/auth';
 import localMenu from '../routerconfig/admin';
 import { login_onclick2 } from '../util/usbKey';
+import { getIEVersion } from '../util/utils';
 import { SoftKey3W } from '../util/Syunew6';
 import { MOCK_API } from '../util/request';
 
@@ -105,6 +110,7 @@ export default {
       s_pnp: null,
       isPlug: true,
       isHelp: false,
+      isIE9: false,
       form: {
         user_account: '',
         user_password: '',
@@ -127,8 +133,12 @@ export default {
     };
   },
   mounted() {
+    if (getIEVersion()) {
+      this.isIE9 = true;
+      return;
+    }
     this.URL = MOCK_API;
-    this.getProjectList();
+    // this.getProjectList();
     this.load();
     login_onclick2().then((res) => {
       if (res) {

@@ -12,7 +12,7 @@ export default {
 <style lang="scss" scoped>
     .search-wrapper {
         background: #ffffff;
-        padding: 30px 25px;
+        padding: 25px 25px 5px 25px;
         margin-bottom: 20px;
     }
 </style>

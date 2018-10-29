@@ -1,23 +1,23 @@
 <template>
   <el-form :inline="true" :model="searchForm">
     <el-form-item label="文件名">
-      <el-input v-model="searchForm.fuzzyname" placeholder="请输入内容"></el-input>
+      <el-input style="width:100px" v-model="searchForm.fuzzyname" placeholder="请输入内容"></el-input>
     </el-form-item>
     <el-form-item label="类型">
-      <el-select v-model="searchForm.fileType" clearable placeholder="全部类型">
+      <el-select style="width:80px" v-model="searchForm.fileType" clearable placeholder="全部类型">
         <el-option label="全部" value=''></el-option>
         <el-option v-for="(item,index) in typeList" :key="index" :label="item.dic_name" :value="item.dic_value"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item v-if="!waste" label="状态">
-      <el-select v-model="searchForm.isDown" clearable placeholder="全部状态">
+      <el-select style="width:80px" v-model="searchForm.isDown" clearable placeholder="全部状态">
         <el-option label="全部" value=''></el-option>
         <el-option label="已下载" value=2></el-option>
         <el-option label="未下载" value=1></el-option>
       </el-select>
     </el-form-item>
     <el-form-item :label="role === 'waste' ? '删除时间' : '时间'">
-      <el-date-picker format="yyyy-MM-dd" @change="changeTime" v-model="firEndTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+      <el-date-picker style="width:240px" format="yyyy-MM-dd" @change="changeTime" v-model="firEndTime" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
       </el-date-picker>
     </el-form-item>
     <el-form-item v-if="role === 'admin'" label="上传人">

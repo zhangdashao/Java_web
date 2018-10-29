@@ -57,3 +57,11 @@ export const getFileTypeIcon = (item) => {
   }
   return item;
 };
+export const getIEVersion = () => {
+  let o = navigator.userAgent.match(/MSIE (\d+)/);
+  o = o && o[1];
+  if (!!o && o <= 9) {
+    return true;
+  }
+  return false;
+};
