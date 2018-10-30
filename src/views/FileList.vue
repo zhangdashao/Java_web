@@ -67,6 +67,16 @@
         </span>
       </el-dialog>
 
+      <el-dialog :modal-append-to-body="false" :append-to-body="true" :visible.sync='dialogUndownloadFile' width="401px">
+        <div style="display:flex;justify-content:center;font-size:18px;margin-bottom:20px;">
+          <i class="iconfont icon-tishi"></i>
+          <span>{{`您有${unDownloadFile}个文件尚未下载`}}</span>
+        </div>
+        <div style="display:flex;justify-content:center;">
+          <el-button style="width:200px;" type="primary">前往查看下载</el-button>
+        </div>
+      </el-dialog>
+
 
     </padding-wrapper>
   </div>
@@ -79,6 +89,7 @@ import PaddingWrapper from '$base-c/PaddingWrapper';
 import SearchBar from '$base-c/SearchBar';
 import MiniWrapper from '$base-c/MiniWrapper';
 import { getFileTypeIcon } from '../util/utils';
+import auth from '../util/auth';
 
 /** 此页面两个角色公用 */
 export default {
@@ -92,6 +103,8 @@ export default {
   },
   data() {
     return {
+      unDownloadFile: 0,
+      dialogUndownloadFile: false,
       dialogShowDownloadView: false,
       loadSign: false,
       role: '',
@@ -114,6 +127,9 @@ export default {
   mounted() {
     this.role = this.$store.getters.getRole;
     this.selectAdminOrUser();
+    if (this.role === 'admin') {
+      this._selectNoDownloadCount();
+    }
   },
   methods: {
     _getUserFileList() {
@@ -166,6 +182,7 @@ export default {
     _downloadFile(data) {
       let id = '';
       let _download = null;
+      const tokenValidate = auth.getToken();
       if (data.type === 'multiple') {
         if (!data.id.length) {
           this.$message.warning('请选择条目！');
@@ -174,15 +191,16 @@ export default {
           id = encodeURIComponent(
             JSON.stringify(data.id.map(item => ({ file_id: item }))),
           );
-          _download = this.$api.downFileBatch({ downFileList: id });
+          _download = this.$api.downFileBatch({ downFileList: id, tokenValidate });
         }
       } else if (data.type === 'single') {
         id = String(data.id);
-        _download = this.$api.downFile({ fileId: id });
+        _download = this.$api.downFile({ fileId: id, tokenValidate });
       }
       this.loadSign = true;
       _download.then((res) => {
         this.loadSign = false;
+        return;
         const blob = new Blob([res]);
         let fileName = '未命名.rar';
         if (data.type === 'multiple') {
@@ -252,6 +270,19 @@ export default {
       }).catch(() => {
         this.dialogShowDownloadView = false;
         this.$message.error('获取下载记录失败');
+      });
+    },
+    /** 管理员获取未下载文件数 */
+    _selectNoDownloadCount() {
+      this.$api.selectNoDownloadCount().then((res) => {
+        if (res.code === '200') {
+          this.unDownloadFile = res.data;
+          if (this.unDownloadFile > 0) {
+            this.dialogUndownloadFile = true;
+          }
+        }
+      }).catch(() => {
+        this.$message.warning('获取未下载文件总数失败！');
       });
     },
     formatterStatus(row) {

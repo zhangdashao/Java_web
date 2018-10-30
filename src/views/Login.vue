@@ -145,7 +145,7 @@ export default {
     load() {
       const me = this;
       // 如果是IE10及以下浏览器，则跳过不处理，
-      if (navigator.userAgent.indexOf('MSIE') > 0 && !navigator.userAgent.indexOf('opera') > -1) return;
+      // if (navigator.userAgent.indexOf('MSIE') > 0 && !navigator.userAgent.indexOf('opera') > -1) return;
       try {
         this.s_pnp = new SoftKey3W();
         // 在使用事件插拨时，注意，一定不要关掉Sockey，否则无法监测事件插拨
@@ -254,7 +254,8 @@ export default {
             }, 1000);
           }
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log(e);
           this.$message.warning('验证码获取失败！！');
         });
 

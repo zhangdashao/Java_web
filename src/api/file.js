@@ -7,9 +7,9 @@ export default {
   // POST /file/addFileInfoComment 添加文件评论
   addFileInfoComment: data => http.post('/file/addFileInfoComment', data),
   // GET /file/downFile 下载文件
-  downFile: data => http.get(getDataStringify('/file/downFile', data), { responseType: 'blob' }),
+  downFile: data => http.get(getDataStringify('/file/downFile', data)),
   // GET /file/downFileBatch 批量下载报告附件文件
-  downFileBatch: data => http.get(getDataStringify('/file/downFileBatch', data), { responseType: 'blob' }),
+  downFileBatch: data => http.get(getDataStringify('/file/downFileBatch', data)),
   // GET /file/selectCommonUserPubList 普通用户查询公共文件列表
   selectCommonUserPubList: data => http.get(getDataStringify('/file/selectCommonUserPubList', data)),
   // GET /file/selectFileDeleteList 管理员查询文件删除列表
