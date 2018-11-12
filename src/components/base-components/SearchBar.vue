@@ -21,7 +21,7 @@
       </el-date-picker>
     </el-form-item>
     <el-form-item v-if="role === 'admin'" label="上传人">
-      <el-input v-model="searchForm.uploadUserName" placeholder="请输入内容"></el-input>
+      <el-input style="width:100px" v-model="searchForm.uploadUserName" placeholder="请输入内容"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button size="mini" type="primary" icon="el-icon-search" @click="comSearch">查询</el-button>

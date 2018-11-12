@@ -14,6 +14,7 @@ export default {
     // 刷新时 判断loginkey？触发handlePermission
     this.$nextTick(() => {
       const loginKeyValue = auth.judgeLogin();
+      const unDownloadFileCount = auth.getUNdownloadFileCount();
       const id = auth.getUserId();
       const role_code = auth.getRole();
       console.log(role_code);
@@ -24,13 +25,20 @@ export default {
           role_code,
         });
       }
+      if (unDownloadFileCount) {
+        this.handleSaveCount(unDownloadFileCount);
+      }
     });
   },
   methods: {
     ...mapActions({
       handlePermission: 'handlePermission',
+      handleSaveCount: 'handleSaveCount',
     }),
   },
 };
 </script>
+<style>
+@import url('./util/element-cover.scss');
+</style>
 

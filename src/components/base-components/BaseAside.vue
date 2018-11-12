@@ -1,6 +1,6 @@
 <template>
     <div class="BaseAside">
-        <el-menu :default-active="active" class="el-menu-vertical-demo" background-color="#222B42" text-color="#fff" active-text-color="#ffd04b">
+        <el-menu ref="menu" :default-active="active" class="el-menu-vertical-demo" background-color="#222B42" text-color="#fff" active-text-color="#ffd04b">
             <!-- <el-menu-item index="/commonFile" @click="linkTo('/commonFile')">
                 <span slot="title">公共文件</span>
             </el-menu-item> -->
@@ -54,6 +54,17 @@ export default {
     this.$nextTick(() => {
       this.active = this.$route.path;
     });
+  },
+  watch: {
+
+    $route(routeMeta) {
+      this.$nextTick(() => {
+        if (routeMeta.path === '/fileList') {
+          this.active = '/fileList';
+          this.$forceUpdate();
+        }
+      });
+    },
   },
 
   methods: {

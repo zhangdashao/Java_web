@@ -92,26 +92,24 @@ service.interceptors.response.use(
         auth.logout();
       }, 1000);
     }
-    if (response.headers && (response.headers['content-type'] === 'application/x-msdownload;charset=UTF-8'
-      || response.headers['content-type'] === 'text/html;charset=UTF-8'
-      || response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
-      console.log(response.request.responseURL);
-      downloadUrl(response.request.responseURL);
-      return;
-    }
-    if (!response.data.code) {
+    // else if (response.headers && (response.headers['content-type'] === 'application/x-msdownload;charset=UTF-8'
+    //   || response.headers['content-type'] === 'text/html;charset=UTF-8'
+    //   || response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+    //   console.log(response);
+    //   downloadUrl(response.request.responseURL);
+    // }
+    // if (!response.data.code) {
+    //   return response.data;
+    // }
+    else if (response.data.code === '200' || response.data.code === '300') {
       return response.data;
-    }
-    const res = response.data;
-    if (res.code === '200' || res.code === '300') {
-      return res;
     } else {
       Message({
-        message: res.data || res.message,
+        message: response.data.data || response.data.message,
         type: 'error',
         duration: 5 * 1000,
       });
-      return Promise.reject(`error ${res.data}`);
+      return Promise.reject(`error ${response.data.data}`);
     }
   },
   (error) => {

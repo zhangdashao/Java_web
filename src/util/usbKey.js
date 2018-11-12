@@ -111,7 +111,7 @@ export function login_onclick2() {
             break;//! !!!!重要提示，如果在调试中，发现代码不对，一定要注意，是不是少了break,这个少了是很常见的错误
           case 1:
             {
-              if (UK_Data.LastError != 0) { window.alert('未发现加密锁，请插入加密锁'); s_simnew1.Socket_UK.close(); return false; }
+              if (UK_Data.LastError != 0) { s_simnew1.Socket_UK.close(); return false; }
               DevicePath = UK_Data.return_value;// 获得返回的UK的路径
 
               s_simnew1.GetID_1(DevicePath); // '读取锁的ID

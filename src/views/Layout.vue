@@ -13,9 +13,10 @@
                         您好,{{user_name}}　　{{role === 'admin'? '管理员' : '医院用户'}}|
                         <!-- <a href="#">设置</a>| -->
                         <a href="#" @click="logout">退出</a>
-                        <span style=" margin: 0 30px;">
-                            <el-badge :value="100" :max="10" class="item">
-                                <el-button type="danger" icon="el-icon-message" round></el-button>
+
+                        <span v-show="role === 'admin'" style=" margin: 0 30px;">
+                            <el-badge :value="$store.state.unDownloadFileCount" :max="10" class="item">
+                                <el-button :disabled="$store.state.unDownloadFileCount == 0" type="danger" icon="el-icon-message" @click="toUndownload" round></el-button>
                             </el-badge>
                         </span>
                     </div>
@@ -29,6 +30,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import BaseAside from '$component/base-components/BaseAside';
 import auth from '$util/auth';
 
@@ -39,9 +41,17 @@ export default {
   components: {
     BaseAside,
   },
+  data() {
+    return {
+      unDownloadFile: 0,
+    };
+  },
   created() {
     this.role = this.$store.getters.getRole;
     this.user_name = JSON.parse(sessionStorage.getItem(auth.userKey)).user_name;
+    this.unDownloadFile = this.$store.state.unDownloadFileCount;
+  },
+  mounted() {
   },
   methods: {
     logout() {
@@ -56,6 +66,14 @@ export default {
         this.$router.push(loginPath);
       });
     },
+    toUndownload() {
+      this.$router.push({ name: 'FileList', params: { type: 'undownload' } });
+      let count = this.$store.state.toDownloadFile;
+      this.toDownload(++count);
+    },
+    ...mapMutations({
+      toDownload: 'CHANGE_DOWNLOAD_STATUS',
+    }),
   },
 };
 </script>
@@ -95,7 +113,7 @@ export default {
         .el-main{
             padding: 0;
             font-size: 0;
-            background: #F4F4F4;
+            background: #ebeef5;
         }
 
     }

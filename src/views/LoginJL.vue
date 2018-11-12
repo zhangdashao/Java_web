@@ -220,6 +220,7 @@ export default {
               role_code: data.role_code,
             });
             auth.setToken(data.token);
+            sessionStorage.setItem('_undowloadFile', 'true');
           });
         }
       });

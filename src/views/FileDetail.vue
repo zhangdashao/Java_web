@@ -1,5 +1,8 @@
 <template>
-  <div class="report-list" v-loading="loadSign">
+  <div class="report-list"
+  v-loading="loadSign"
+  element-loading-text="正在解密中，请稍后生成下载文件..."
+  element-loading-background="rgba(0, 0, 0, 0.8)">
     <padding-wrapper>
       <search-wrapper>
         <div class="info-warpper">
@@ -92,7 +95,9 @@
 <script>
 import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
-import { getFileTypeIcon } from '../util/utils';
+import { getFileTypeIcon, getDataStringify } from '../util/utils';
+import auth from '../util/auth';
+import { MOCK_API } from '../util/request';
 
 export default {
   name: 'FileDetail',
@@ -165,10 +170,12 @@ export default {
     /** 下载文件 */
     _downloadFile() {
       const id = String(this.fileId);
-
+      const tokenValidate = auth.getToken();
       this.loadSign = true;
-      this.$api.downFile({ fileId: id }).then((res) => {
-        this.loadSign = false;
+      this.downloadUrl(getDataStringify(`${MOCK_API}/file/downFile`, { fileId: id, tokenValidate }));
+      this.loadSign = false;
+      return;
+      this.$api.downFile({ fileId: id, tokenValidate }).then((res) => {
         const blob = new Blob([res]);
         const fileName = this.fileInfo.file_original_name;
 
@@ -205,6 +212,15 @@ export default {
       }, () => {
         this.$message.warning('操作出错了！');
       });
+    },
+    downloadUrl(url) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      iframe.onload = function () {
+        document.body.removeChild(iframe);
+      };
+      document.body.appendChild(iframe);
     },
 
   },

@@ -36,4 +36,7 @@ export const handlePermission = ({ commit }, { menuData, id, role_code }) => {
     VM.$router.push({ path: '/fileList' });
   }
 };
+export const handleSaveCount = ({ commit }, unDownloadFile) => {
+  commit(types.SAVE_UNDOWNLOAD_COUNT, unDownloadFile);
+};
 

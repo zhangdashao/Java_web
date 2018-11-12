@@ -1,7 +1,7 @@
 <template>
   <div class="report-list"
   v-loading="loadSign"
-  element-loading-text="正在下载中..."
+  element-loading-text="正在解密中，请稍后生成下载文件..."
   element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <bg-title :title="role === 'user' ? '我的文件' : '用户文件'"></bg-title>
@@ -21,9 +21,9 @@
         </div>
       </mini-wrapper>
       <el-table :data="fileList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55">
+        <el-table-column align="center" type="selection" width="30">
         </el-table-column>
-        <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="350">
+        <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="200">
           <template scope="scope">
             <div style="display:flex;align-items:center">
               <i :style="{'color':scope.row.color}" :class="['iconfont',scope.row.type]"></i>
@@ -32,7 +32,7 @@
           </template>
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="file_type" :formatter="formatterType" label="文件类型"></el-table-column>
-        <el-table-column align="center" header-align="center" prop="upload_time" label="上传时间"></el-table-column>
+        <el-table-column align="center" header-align="center" prop="upload_time" label="上传时间" width="177"></el-table-column>
         <el-table-column align="center" header-align="center" prop="file_size" :formatter="formatterFileSize" label="文件大小"></el-table-column>
         <el-table-column align="center" header-align="center" prop="user_name" label="上传人"></el-table-column>
         <el-table-column align="center" header-align="center" prop="download_count" label="下载次数"></el-table-column>
@@ -73,7 +73,7 @@
           <span>{{`您有${unDownloadFile}个文件尚未下载`}}</span>
         </div>
         <div style="display:flex;justify-content:center;">
-          <el-button style="width:200px;" type="primary">前往查看下载</el-button>
+          <el-button style="width:200px;" type="primary" @click="toLookDownload()">前往查看下载</el-button>
         </div>
       </el-dialog>
 
@@ -83,13 +83,16 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex';
 import BgTitle from '$base-c/BgTitle';
 import SearchWrapper from '$base-c/SearchWrapper';
 import PaddingWrapper from '$base-c/PaddingWrapper';
 import SearchBar from '$base-c/SearchBar';
 import MiniWrapper from '$base-c/MiniWrapper';
-import { getFileTypeIcon } from '../util/utils';
+import { getFileTypeIcon, getDataStringify } from '../util/utils';
+import { MOCK_API } from '../util/request';
 import auth from '../util/auth';
+
 
 /** 此页面两个角色公用 */
 export default {
@@ -124,8 +127,23 @@ export default {
       totalCount: 0,
     };
   },
+  computed: {
+    localState() {
+      return this.$store.state.toDownloadFile;
+    },
+  },
+  watch: {
+    localState(a) {
+      if (a !== 0) {
+        this.toLookDownload();
+      }
+    },
+  },
   mounted() {
     this.role = this.$store.getters.getRole;
+    if (this.$route.params.type === 'undownload') {
+      this.toLookDownload();
+    }
     this.selectAdminOrUser();
     if (this.role === 'admin') {
       this._selectNoDownloadCount();
@@ -181,7 +199,7 @@ export default {
     // 下载文件方法（下载一条或者是多条）
     _downloadFile(data) {
       let id = '';
-      let _download = null;
+      const _download = null;
       const tokenValidate = auth.getToken();
       if (data.type === 'multiple') {
         if (!data.id.length) {
@@ -191,15 +209,47 @@ export default {
           id = encodeURIComponent(
             JSON.stringify(data.id.map(item => ({ file_id: item }))),
           );
-          _download = this.$api.downFileBatch({ downFileList: id, tokenValidate });
+          try {
+            this.loadSign = true;
+
+            this.downloadUrl(getDataStringify(`${MOCK_API}/file/downFileBatch`, { downFileList: id, tokenValidate }));
+            this.fileList.forEach((item) => {
+              data.id.map((item_id) => {
+                if (item_id == item.id) {
+                  item.download_count = Number(item.download_count) + 1;
+                }
+              });
+              return item;
+            });
+            this.loadSign = false;
+          } catch (e) {
+            console.log(e);
+          }
+
+          // _download = this.$api.downFileBatch({ downFileList: id, tokenValidate });
         }
       } else if (data.type === 'single') {
         id = String(data.id);
-        _download = this.$api.downFile({ fileId: id, tokenValidate });
+        this.loadSign = true;
+
+        this.downloadUrl(getDataStringify(`${MOCK_API}/file/downFile`, { fileId: id, tokenValidate }));
+        this.fileList.forEach((item) => {
+          if (id == item.id) {
+            item.download_count = Number(item.download_count) + 1;
+          }
+          return item;
+        });
+        this.loadSign = false;
+
+        // _download = this.$api.downFile({ fileId: id, tokenValidate });
       }
+      return;
       this.loadSign = true;
       _download.then((res) => {
         this.loadSign = false;
+        if (this.role === 'admin') {
+          this._selectNoDownloadCount();
+        }
         return;
         const blob = new Blob([res]);
         let fileName = '未命名.rar';
@@ -277,8 +327,12 @@ export default {
       this.$api.selectNoDownloadCount().then((res) => {
         if (res.code === '200') {
           this.unDownloadFile = res.data;
-          if (this.unDownloadFile > 0) {
+          auth.setUNdownloadFileCount(this.unDownloadFile);
+          this.handleSaveCount(this.unDownloadFile);
+          const undownloadFile = sessionStorage.getItem('_undowloadFile');
+          if (this.unDownloadFile > 0 && undownloadFile === 'true') {
             this.dialogUndownloadFile = true;
+            sessionStorage.setItem('_undowloadFile', 'false');
           }
         }
       }).catch(() => {
@@ -298,6 +352,26 @@ export default {
     formatterFileSize(row) {
       return `${(Number(row.file_size) / 1024).toFixed(1)}kb`;
     },
+    toLookDownload() {
+      this.selectParams.isDown = 1;
+      this.selectAdminOrUser();
+      this.dialogUndownloadFile = false;
+    },
+    downloadUrl(url) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = url;
+      iframe.onload = function () {
+        document.body.removeChild(iframe);
+      };
+      document.body.appendChild(iframe);
+    },
+    ...mapActions({
+      handleSaveCount: 'handleSaveCount',
+    }),
+    ...mapMutations({
+      toDownload: 'CHANGE_DOWNLOAD_STATUS',
+    }),
     /**  **************以下为分页方法↓******************** */
     handleSizeChange(pageSize) {
       this.selectParams.rows = pageSize;

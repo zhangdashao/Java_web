@@ -7,6 +7,7 @@ export default {
   optKey: '_optKey',
   projectIdKey: '_projectIdKey',
   projectNameKey: '_projectNameKey',
+  UNdownloadFileCount: '_UNdownloadFileCount',
   judgeLogin() {
     return sessionStorage.getItem(this.loginKey);
   },
@@ -60,6 +61,12 @@ export default {
   },
   getProjectName() {
     return sessionStorage.getItem(this.projectNameKey);
+  },
+  setUNdownloadFileCount(value) {
+    sessionStorage.setItem(this.UNdownloadFileCount, value);
+  },
+  getUNdownloadFileCount() {
+    return sessionStorage.getItem(this.UNdownloadFileCount);
   },
   codeToRole: {
     1000: '管理员',

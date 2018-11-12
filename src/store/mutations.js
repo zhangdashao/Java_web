@@ -10,6 +10,12 @@ const mutations = {
   [types.SAVE_ROLE](state, role_code) {
     state.role_code = role_code;
   },
+  [types.SAVE_UNDOWNLOAD_COUNT](state, unDownloadFile) {
+    state.unDownloadFileCount = unDownloadFile;
+  },
+  [types.CHANGE_DOWNLOAD_STATUS](state, value) {
+    state.toDownloadFile = value;
+  },
 };
 export default mutations;
 
