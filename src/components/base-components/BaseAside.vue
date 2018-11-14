@@ -86,7 +86,7 @@ export default {
 
 <style lang="scss" scoped>
     .BaseAside{
-        height: 100%;
+        height: calc(100% - 140px);
         .el-menu{
             height: 100%;
         }

@@ -1,7 +1,7 @@
 <template>
     <div class="layout">
         <el-container>
-            <el-aside style="width:200px;display:flex;flex-direction:column;">
+            <el-aside style="width:200px;display:flex;flex-direction:column;height:100%">
                 <div class="logo-wrapper">
                     <img src="../assets/image/left_title.png" width="176" height="52" alt="嘉量">
                 </div>

@@ -1,4 +1,4 @@
-import { Notification } from 'element-ui';
+// import { Notification } from 'element-ui';
 import router from './index';
 import auth from '../util/auth';
 
@@ -14,10 +14,10 @@ export default () => {
     if (auth.judgeLogin()) {
       next();
     } else {
-      Notification.error({
-        title: '错误',
-        message: '请先登录',
-      });
+      // Notification.error({
+      //   title: '错误',
+      //   message: '请先登录',
+      // });
       next({
         path: '/login',
       });

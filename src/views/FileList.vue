@@ -38,7 +38,7 @@
         <el-table-column align="center" header-align="center" prop="download_count" label="下载次数"></el-table-column>
         <el-table-column align="center" header-align="center" prop="remark" label="备注"></el-table-column>
         <el-table-column align="center" header-align="center" prop="status" :formatter="formatterStatus" label="状态"></el-table-column>
-        <el-table-column align="center" header-align="center" label="操作" width="200">
+        <el-table-column align="center" header-align="center" label="操作" width="220">
           <template slot-scope="scope">
             <el-button v-if="role ==='user'" type="text" @click="_deleteFile({type: 'single',id:scope.row.id})">删除</el-button>
             <span v-if="role ==='user'" style="color:#409EFF">|</span>
