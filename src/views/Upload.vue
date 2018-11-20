@@ -5,6 +5,7 @@
         <el-upload ref="upload" class="upload-demo" :limit="1" drag action="123" :before-upload="_beforeUpload" :multiple="false" :auto-upload="false">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <el-progress v-show="uploadStatus" :percentage="progess"></el-progress>
         </el-upload>
       </div>
       <div class="btn-wrapper">
@@ -26,9 +27,25 @@ export default {
   data() {
     return {
       role: '',
+      progess: 0,
+      uploadStatus: false,
       upLoading: false,
       remark: '',
     };
+  },
+  watch: {
+    progess(val) {
+      if (val === 0) {
+        this.uploadStatus = false;
+      } else if (val === 100) {
+        setTimeout(() => {
+          this.uploadStatus = false;
+          this.$message.success('上传成功');
+        }, 1000);
+      } else {
+        this.uploadStatus = true;
+      }
+    },
   },
   mounted() {
     this.role = this.$store.getters.getRole;
@@ -49,11 +66,10 @@ export default {
       if (this.role === 'admin') {
         upload = this.$api.uploadManageUser(postData);
       } else if (this.role === 'user') {
-        upload = this.$api.uploadCommonUser(postData);
+        upload = this.$api.uploadCommonUser(postData, this.getUploadProgress);
       }
       upload.then((res) => {
         if (res.code === '200') {
-          this.$message.success('上传成功');
           this.upLoading = false;
           this.remark = '';
         }
@@ -61,6 +77,9 @@ export default {
         this.upLoading = false;
       });
       return false;
+    },
+    getUploadProgress(e) {
+      this.progess = Math.round(e.loaded / e.total * 100);
     },
   },
 };

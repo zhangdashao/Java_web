@@ -37,7 +37,7 @@ export default {
   // POST /file/updateFileInfoStatus 设置文件状态
   updateFileInfoStatus: data => http.post('/file/updateFileInfoStatus', data),
   // POST /file/uploadCommonUser 普通医院用户上传文件
-  uploadCommonUser: data => http.post('/file/uploadCommonUser', data),
+  uploadCommonUser: (data, callback) => http.post('/file/uploadCommonUser', data, { onUploadProgress: (e) => { callback(e); } }),
   // POST /file/uploadManageUser 管理员上传文件
   uploadManageUser: data => http.post('/file/uploadManageUser', data),
 };
