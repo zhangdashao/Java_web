@@ -39,7 +39,7 @@
                 </div>
                 <div v-show="isIE9">
                   <i style="color:red" class="iconfont icon-tishi"></i>
-                  <span style="color:red;">对不起，请使用高版本浏览器</span>
+                  <span style="color:red;">对不起，请使用高版本浏览器 <a href="http://web.manyiyun.cn/file_system/util/downGoogle49" style="color:#409EFF;cursor:pointer">点此下载</a></span>
                 </div>
                 <div v-show="!isPlug">
                   <i style="color:red" class="iconfont icon-tishi"></i>
