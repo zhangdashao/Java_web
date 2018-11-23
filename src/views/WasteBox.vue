@@ -16,12 +16,14 @@
         </div>
       </mini-wrapper>
       <el-table :data="fileList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55">
+        <el-table-column align="center" type="selection" width="30">
         </el-table-column>
-        <el-table-column align="center" header-align="center" prop="phone" label="文件名">
+        <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="200">
           <template slot-scope="scope">
-            <i :class="['iconfont',scope.row.type]"></i>
-            <span>{{scope.row.file_original_name}}</span>
+            <div style="display:flex;align-items:center">
+              <i :class="['iconfont',scope.row.type]"></i>
+              <span :title="scope.row.file_original_name" style="width:300px;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;">{{scope.row.file_original_name}}</span>
+            </div>
           </template>
           <el-input>12</el-input>
         </el-table-column>

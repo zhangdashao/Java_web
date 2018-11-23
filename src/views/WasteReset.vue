@@ -15,9 +15,9 @@
         </div>
       </mini-wrapper>
       <el-table :data="fileList" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55">
+        <el-table-column align="center" type="selection" width="30">
         </el-table-column>
-        <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="350">
+        <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="200">
           <template slot-scope="scope">
             <div style="display:flex;align-items:center">
               <i :style="{'color':scope.row.color}" :class="['iconfont',scope.row.type]"></i>
