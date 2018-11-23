@@ -24,7 +24,7 @@
         <el-table-column align="center" type="selection" width="30">
         </el-table-column>
         <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="200">
-          <template scope="scope">
+          <template slot-scope="scope">
             <div style="display:flex;align-items:center">
               <i :style="{'color':scope.row.color}" :class="['iconfont',scope.row.type]"></i>
               <span :title="scope.row.file_original_name" style="width:300px;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;">{{scope.row.file_original_name}}</span>
@@ -199,12 +199,10 @@ export default {
     // 下载文件方法（下载一条或者是多条）
     _downloadFile(data) {
       let id = '';
-      const _download = null;
       const tokenValidate = auth.getToken();
       if (data.type === 'multiple') {
         if (!data.id.length) {
           this.$message.warning('请选择条目！');
-          return;
         } else {
           id = encodeURIComponent(
             JSON.stringify(data.id.map(item => ({ file_id: item }))),
@@ -225,8 +223,6 @@ export default {
           } catch (e) {
             console.log(e);
           }
-
-          // _download = this.$api.downFileBatch({ downFileList: id, tokenValidate });
         }
       } else if (data.type === 'single') {
         id = String(data.id);
@@ -240,46 +236,7 @@ export default {
           return item;
         });
         this.loadSign = false;
-
-        // _download = this.$api.downFile({ fileId: id, tokenValidate });
       }
-      return;
-      this.loadSign = true;
-      _download.then((res) => {
-        this.loadSign = false;
-        if (this.role === 'admin') {
-          this._selectNoDownloadCount();
-        }
-        return;
-        const blob = new Blob([res]);
-        let fileName = '未命名.rar';
-        if (data.type === 'multiple') {
-          fileName = '批量文件.zip';
-        } else {
-          fileName = data.name;
-        }
-        if ('download' in document.createElement('a')) {
-          // 非IE下载
-          const elink = document.createElement('a');
-          elink.download = fileName;
-          elink.style.display = 'none';
-          elink.href = URL.createObjectURL(blob);
-          document.body.appendChild(elink);
-          elink.click();
-          URL.revokeObjectURL(elink.href); // 释放URL 对象
-          document.body.removeChild(elink);
-        } else {
-          // IE10+下载
-          navigator.msSaveBlob(blob, fileName);
-        }
-        this.$message.success('下载成功');
-      }).then(() => {
-        this.selectAdminOrUser();
-      })
-        .catch(() => {
-          this.loadSign = false;
-          this.$message.warning('下载出错！');
-        });
     },
     // 删除文件或者是放入垃圾箱
     _deleteFile(data) {
@@ -361,7 +318,7 @@ export default {
       const iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.src = url;
-      iframe.onload = function () {
+      iframe.onload = () => {
         document.body.removeChild(iframe);
       };
       document.body.appendChild(iframe);

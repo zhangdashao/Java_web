@@ -19,17 +19,17 @@ const service = axios.create({
 service.defaults.withCredentials = true;
 
 
-// #endregion
-// download url
-const downloadUrl = (url) => {
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = url;
-  iframe.onload = function () {
-    document.body.removeChild(iframe);
-  };
-  document.body.appendChild(iframe);
-};
+// // #endregion
+// // download url
+// const downloadUrl = (url) => {
+//   const iframe = document.createElement('iframe');
+//   iframe.style.display = 'none';
+//   iframe.src = url;
+//   iframe.onload = function () {
+//     document.body.removeChild(iframe);
+//   };
+//   document.body.appendChild(iframe);
+// };
 // Add a response interceptor
 // service.interceptors.response.use((res) => {
 //   // 处理excel文件

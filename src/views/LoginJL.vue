@@ -169,7 +169,7 @@ export default {
           }
         };
 
-        this.s_pnp.Socket_UK.onerror = function (e) {
+        this.s_pnp.Socket_UK.onerror = function () {
           me.isPlug = false;
         };
       } catch (e) {
@@ -188,7 +188,6 @@ export default {
           }
           this.$api.login(loginData).then(({ data }) => {
             const {
-              urlList: menu,
               user_name,
               phone,
               hospital_id,
@@ -269,7 +268,7 @@ export default {
             this.valCodePrompt = `${count}s后重新获取`;
             const timer = setInterval(() => {
               if (count > 1) {
-                count--;
+                count -= 1;
                 this.valCodePrompt = `${count}s后重新获取`;
               } else {
                 this.valCodePrompt = '获取短信验证码';

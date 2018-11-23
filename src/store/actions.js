@@ -3,7 +3,6 @@ import addComponent from '../util/dynamicRouter';
 import VM from '../main';
 import { deepCloneJson } from '../global/global-function';
 import { defaultRouter } from '../router/index';
-import auth from '../util/auth';
 
 
 /**

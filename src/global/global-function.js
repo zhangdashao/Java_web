@@ -96,23 +96,6 @@ export function isPhoneAvailable(str) {
   }
 }
 
-/**
- * 8.(get请求参数拼接)
- * @param {string} url 借口基础url
- * @param {object} payload query 对象参数
- * @returns {string} 拼接参数之后的queryurl
- */
-export function joinQueryStr(url = required(), payload) {
-  if (type(url) !== 'string') {
-    throw new Error(`url params must be stringtype ${url} is ${type(url)}`);
-  }
-  let retQueryStr = `${url}?`;
-  for (const prop of Object.keys(payload)) {
-    payload[prop] !== '' ? retQueryStr += `${prop}=${payload[prop]}&` : '';
-  }
-  return retQueryStr;
-}
-
 
 /**
  * 9.(自定义格式化时间)

@@ -20,7 +20,7 @@
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column align="left" header-align="center" prop="phone" label="文件名" width="350">
-          <template scope="scope">
+          <template slot-scope="scope">
             <div style="display:flex;align-items:center">
               <i :style="{'color':scope.row.color}" :class="['iconfont',scope.row.type]"></i>
               <span :title="scope.row.file_original_name" style="width:300px;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;">{{scope.row.file_original_name}}</span>

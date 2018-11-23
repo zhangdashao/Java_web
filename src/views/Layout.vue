@@ -69,7 +69,7 @@ export default {
     toUndownload() {
       this.$router.push({ name: 'FileList', params: { type: 'undownload' } });
       let count = this.$store.state.toDownloadFile;
-      this.toDownload(++count);
+      this.toDownload(count += 1);
     },
     ...mapMutations({
       toDownload: 'CHANGE_DOWNLOAD_STATUS',

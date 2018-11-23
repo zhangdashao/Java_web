@@ -174,31 +174,6 @@ export default {
       this.loadSign = true;
       this.downloadUrl(getDataStringify(`${MOCK_API}/file/downFile`, { fileId: id, tokenValidate }));
       this.loadSign = false;
-      return;
-      this.$api.downFile({ fileId: id, tokenValidate }).then((res) => {
-        const blob = new Blob([res]);
-        const fileName = this.fileInfo.file_original_name;
-
-        if ('download' in document.createElement('a')) {
-          // 非IE下载
-          const elink = document.createElement('a');
-          elink.download = fileName;
-          elink.style.display = 'none';
-          elink.href = URL.createObjectURL(blob);
-          document.body.appendChild(elink);
-          elink.click();
-          URL.revokeObjectURL(elink.href); // 释放URL 对象
-          document.body.removeChild(elink);
-        } else {
-          // IE10+下载
-          navigator.msSaveBlob(blob, fileName);
-        }
-        this.$message.success('下载成功');
-      })
-        .catch(() => {
-          this.loadSign = false;
-          this.$message.warning('下载出错！');
-        });
     },
     _deleteFile() {
       const fileIds = JSON.stringify([this.fileId]);

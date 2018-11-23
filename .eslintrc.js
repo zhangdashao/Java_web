@@ -44,7 +44,11 @@ module.exports = {
     'no-restricted-properties':0,
     'no-caller':0,
     'no-param-reassign':0,
-    'max-len':0,
+    'max-len': 0,
+    "func-names": 0,
+    "no-alert": 0,
+    "brace-style": 0,
+    "eqeqeq": 0,
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {
       js: 'never',

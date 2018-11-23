@@ -20,7 +20,7 @@
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column align="center" header-align="center" prop="phone" label="文件名">
-          <template scope="scope">
+          <template slot-scope="scope">
             <i class="iconfont icon--zip-compressed-f"></i>
             <span>{{scope.row.file_original_name}}</span>
           </template>

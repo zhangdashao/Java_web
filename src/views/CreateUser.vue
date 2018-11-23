@@ -137,7 +137,7 @@ export default {
     };
   },
   watch: {
-    'Info.role_code': function (val, oldVal) {
+    'Info.role_code': function (val) {
       if (val === '1000') {
         this.Info.hospital_name = '';
       }
@@ -164,8 +164,8 @@ export default {
         // 在使用事件插拨时，注意，一定不要关掉Sockey，否则无法监测事件插拨
         this.s_pnp.Socket_UK.onmessage = function got_packet(Msg) {
           const PnpData = JSON.parse(Msg.data);
-          if (PnpData.type === 'PnpEvent')// 如果是插拨事件处理消息
-          {
+          // 如果是插拨事件处理消息
+          if (PnpData.type === 'PnpEvent') {
             if (PnpData.IsIn) {
               login_onclick2().then((res) => {
                 me.usbKey = true;
