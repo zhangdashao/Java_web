@@ -40,5 +40,6 @@ export default {
 </script>
 <style>
 @import url('./util/element-cover.scss');
+@import url('./assets/font/iconfont.css');
 </style>
 
