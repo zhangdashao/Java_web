@@ -23,7 +23,7 @@
           <el-row>
             <el-col :span="9">
               <el-form-item label="项　目" prop="project_id">
-                <el-select v-model="form.project_id" placeholder="请选择项目">
+                <el-select disabled="true" v-model="form.project_id" placeholder="请选择项目">
                   <el-option v-for="item in projectList" :key="item.project_code" :label="item.project_name" :value="item.project_code">
                   </el-option>
                 </el-select>
@@ -228,6 +228,7 @@ export default {
     getProjectList() {
       return this.$api.selectAllProjectInfo().then((res) => {
         this.projectList = res.data;
+        this.form.project_id = res.data[0].project_code;
       });
     },
     /** 获取短信验证码 */

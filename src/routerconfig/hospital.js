@@ -3,6 +3,15 @@ export default [
     mainText: '文件管理',
     children: [
       {
+        path: 'commonFile',
+        name: 'CommonFile',
+        component: 'CommonFile',
+        meta: {
+          title: '公共文件',
+          permission: '对应具体权限',
+        },
+      },
+      {
         path: 'fileList',
         name: 'FileList',
         component: 'FileList',
